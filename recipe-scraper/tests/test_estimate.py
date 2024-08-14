@@ -9,7 +9,7 @@ sample_formdata: EstimateFormData = {
 }
 
 def test_confidence_score():
-    cs = get_confidence_score(sample_formdata)
+    cs = get_confidence_score(sample_formdata['description'])
     print('CS: ', cs)
     assert isinstance(cs, int)
     assert 0 < cs <= 10

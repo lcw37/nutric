@@ -21,7 +21,7 @@ class NutritionValues(BaseModel):
     protein: MinMaxPair | None = None
 
 class EstimateFormData(BaseModel):
-    description: str
+    description: str | None = None
     nutrient_fields: list[str] | None = None
     followup: str | None = None
     followup_response: str | None = None

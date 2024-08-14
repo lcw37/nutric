@@ -25,8 +25,7 @@ def response(prompt: str) -> str:
     return completion.choices[0].message.content
 
 
-def get_confidence_score(formdata: EstimateFormData) -> int:
-    description = formdata.get('description')
+def get_confidence_score(description: str) -> int:
     p = prompts.confidence_score_prompt.format(description=description)
     try:
         r = response(p)
@@ -37,8 +36,7 @@ def get_confidence_score(formdata: EstimateFormData) -> int:
         raise Exception('Failed to create confidence score.')
 
 
-def get_followup(formdata: EstimateFormData) -> str:
-    description = formdata.get('description')
+def get_followup(description: str) -> str:
     p = prompts.followup_prompt.format(description=description)
     try:
         r = response(p)
@@ -50,10 +48,10 @@ def get_followup(formdata: EstimateFormData) -> str:
 
 
 def get_estimate(formdata: EstimateFormData) -> NutritionValues:
-    description = formdata.get('description')
-    nutrient_fields = formdata.get('nutrient_fields')
-    followup = formdata.get('followup')
-    followup_response = formdata.get('followup_response')
+    description = formdata.description
+    nutrient_fields = formdata.nutrient_fields
+    followup = formdata.followup
+    followup_response = formdata.followup_response
     
     followup_info = ''
     if followup and followup_response:
@@ -75,18 +73,5 @@ def get_estimate(formdata: EstimateFormData) -> NutritionValues:
         raise Exception(f'Estimate returned in invalid format.\n{e.errors()}')
     except Exception:
         raise Exception('Failed to get estimate.')
-    
 
-def run_estimate_process():
-    description = input('DESCRIPTION: ')
-    cs = get_confidence_score(description)
-    if cs < 7:
-        followup = get_followup(description)
-        print('FOLLOWUP:', followup)
-        followup_response = input('RESPONSE: ')
-        estimate = get_estimate(description, followup, followup_response)
-    else:
-        estimate = get_estimate(description)
-    print(estimate)
-    
     

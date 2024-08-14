@@ -16,26 +16,29 @@ app = FastAPI()
 
 # @app.post("/analyze")
 # async def analyze(url: str):
-@app.get('/analyze')
+@app.get('/scraper')
 async def analyze():
     url = 'https://cafedelites.com/authentic-chimichurri-uruguay-argentina/'
-    
     html = requests.get(url).content
     scraper = scrape_html(html, org_url=url)
-    
     return {
         'ingredients': scraper.ingredients(),
         'nutrients': scraper.nutrients()
     }
 
 
-
 @app.post('/estimate')
 async def estimate(formdata: EstimateFormData):
-    description = formdata.get('description')
-    score = get_confidence_score(description)
-    if score < 7:
-        followup = get_followup(description)
-        return {
-            
-        }
+    cs = get_confidence_score(formdata.description)
+    if not formdata.followup:
+        if cs < 7:
+            formdata.followup = get_followup(formdata.description)
+            return {
+                'response_type': 'followup',
+                'data': formdata
+            }
+    estimate = get_estimate(formdata)
+    return {
+        'response_type': 'estimate',
+        'data': estimate
+    }
