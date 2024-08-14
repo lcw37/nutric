@@ -49,7 +49,7 @@ def get_followup(description: str) -> str:
 
 def get_estimate(
     description: str, 
-    fields: list,
+    nutrient_fields: list[str],
     followup: str = None,
     followup_response: str = None
 # ) -> NutritionEstimate:
@@ -63,7 +63,7 @@ def get_estimate(
     p = prompts.estimate_prompt.format(
         description=description,
         followup_info=followup_info,
-        fields=fields
+        nutrient_fields=nutrient_fields
     )
     try:
         r = response(p)

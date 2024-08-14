@@ -3,25 +3,35 @@ import requests
 import re
 
 
-def get_nutrition_from_url(url: str, servings: float = 1.0):
+def get_nutrition_from_url(url: str, nutrient_fields: list[str] | None = None, servings: float = 1.0) -> dict:
+    # try:
     html = requests.get(url).content
     scraper = scrape_html(html, org_url=url)
-    return {
-        'ingredients': scraper.ingredients(),
-        'nutrients': scraper.nutrients(),
-    }
+    nutrients = scraper.nutrients()
     
-# print(get_nutrition_from_url('https://cafedelites.com/authentic-chimichurri-uruguay-argentina/'))
+    parsed_nutrients = {}
+    if nutrient_fields is None:
+        nutrient_fields = list(nutrients.keys())
+    for k in nutrient_fields:
+        amount, unit = parse_macro(nutrients[k])
+        amount *= servings
+        parsed_nutrients[k] = [amount, unit]
+    return parsed_nutrients
+    # except Exception:
+    #     raise Exception('Failed to get nutrition from url.')
+    
 
-
-def parse_macro(text: str) -> list[int, str] | None:
+def parse_macro(text: str) -> list[int, str] | None | str:
     """
     possible structures for macro: '100g', '100 g', '100 g of protein'
-    possible units: 'g', 'mg'
+    possible units: 'g', 'mg', 'cal', 'kcal'
+    returns: [100, 'g'/'mg'/'cal']
     """
-    match = re.search(r'(\d+)\s*(g|mg)', text)
+    match = re.search(r'(\d+)\s*(g|mg|cal|kcal)', text)
     if match:
         amount = int(match.group(1))
         unit = match.group(2)
+        if unit == 'kcal':
+            unit = 'cal'
         return [amount, unit]
-    return None
+    return [1, text]

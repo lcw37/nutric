@@ -1,9 +1,7 @@
-import requests
-from recipe_scrapers import scrape_html
+from lib.recipes import get_nutrition_from_url
 
-url = "https://www.allrecipes.com/recipe/158968/spinach-and-feta-turkey-burgers/"
 
-html = requests.get(url).content
-scraper = scrape_html(html, org_url=url)
-
-print(scraper.ingredients())
+url = 'https://cafedelites.com/authentic-chimichurri-uruguay-argentina/'
+servings = 1.0
+result = get_nutrition_from_url(url=url, servings=servings)
+print(result)

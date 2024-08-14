@@ -35,7 +35,7 @@ estimate_prompt = """
 
     Try to make a reasonable estimate of the nutrition facts from this description that is within plus-minus 50 calories of the actual value.
 
-    Respond with a estimate of min-max range pairs for each field in {fields} as JSON:
+    Respond with a estimate of min-max range pairs for each field in {nutrient_fields} as JSON:
     {{<field>: [<min: number>, <max: number>, <unit: string>], }}. Only return the JSON string.
     
     Examples:
@@ -48,6 +48,8 @@ followup_info_prompt = """
     Followup Question: {followup}
     User Response: {followup_response}
 """
+
+########### SAMPLE INPUTS ###########
 
 sample_description = """
     1 small plate/bowl of baked eggplant parm,
