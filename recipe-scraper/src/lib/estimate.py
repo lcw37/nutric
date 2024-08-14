@@ -3,7 +3,8 @@ from dotenv import load_dotenv
 import os
 from openai import OpenAI
 import json
-from lib.typing import NutritionEstimate
+# from lib.models import NutritionEstimate
+from pydantic import ValidationError
 
 
 load_dotenv()
@@ -17,7 +18,9 @@ def response(prompt: str) -> str:
         model=model,
         messages=[
             {'role': 'user', 'content': prompt}
-        ]
+        ],
+        response_format={"type": "json_object"},
+        temperature=0
     )
     return completion.choices[0].message.content
 
@@ -46,9 +49,11 @@ def get_followup(description: str) -> str:
 
 def get_estimate(
     description: str, 
+    fields: list,
     followup: str = None,
     followup_response: str = None
-) -> NutritionEstimate:
+# ) -> NutritionEstimate:
+) -> dict:
     followup_info = ''
     if followup and followup_response:
         followup_info = prompts.followup_info_prompt.format(
@@ -57,13 +62,17 @@ def get_estimate(
         )
     p = prompts.estimate_prompt.format(
         description=description,
-        followup_info=followup_info
+        followup_info=followup_info,
+        fields=fields
     )
     try:
         r = response(p)
         r = json.loads(r)
-        estimate = NutritionEstimate(**r)
+        # estimate = NutritionEstimate(**r)
+        estimate = r
         return estimate
+    except ValidationError as e:
+        raise Exception(f'Estimate returned in invalid format.\n{e.errors()}')
     except Exception:
         raise Exception('Failed to get estimate.')
     
