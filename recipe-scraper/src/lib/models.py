@@ -19,3 +19,9 @@ class NutritionValues(BaseModel):
     carbs: MinMaxPair | None = None
     fat: MinMaxPair | None = None
     protein: MinMaxPair | None = None
+
+class EstimateFormData(BaseModel):
+    description: str
+    nutrient_fields: list[str] | None = None
+    followup: str | None = None
+    followup_response: str | None = None

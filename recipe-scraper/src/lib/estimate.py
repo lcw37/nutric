@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import os
 from openai import OpenAI
 import json
-from lib.models import NutritionValues
+from lib.models import NutritionValues, EstimateFormData
 from pydantic import ValidationError
 
 
@@ -25,7 +25,8 @@ def response(prompt: str) -> str:
     return completion.choices[0].message.content
 
 
-def get_confidence_score(description: str) -> int:
+def get_confidence_score(formdata: EstimateFormData) -> int:
+    description = formdata.get('description')
     p = prompts.confidence_score_prompt.format(description=description)
     try:
         r = response(p)
@@ -36,7 +37,8 @@ def get_confidence_score(description: str) -> int:
         raise Exception('Failed to create confidence score.')
 
 
-def get_followup(description: str) -> str:
+def get_followup(formdata: EstimateFormData) -> str:
+    description = formdata.get('description')
     p = prompts.followup_prompt.format(description=description)
     try:
         r = response(p)
@@ -47,13 +49,12 @@ def get_followup(description: str) -> str:
         raise Exception('Failed to get followup.')
 
 
-def get_estimate(
-    description: str, 
-    nutrient_fields: list[str],
-    followup: str = None,
-    followup_response: str = None
-) -> NutritionValues:
-# ) -> dict:
+def get_estimate(formdata: EstimateFormData) -> NutritionValues:
+    description = formdata.get('description')
+    nutrient_fields = formdata.get('nutrient_fields')
+    followup = formdata.get('followup')
+    followup_response = formdata.get('followup_response')
+    
     followup_info = ''
     if followup and followup_response:
         followup_info = prompts.followup_info_prompt.format(
@@ -68,8 +69,6 @@ def get_estimate(
     try:
         r = response(p)
         r = json.loads(r)
-        print(r)
-        print()
         estimate = NutritionValues(**r)
         return estimate
     except ValidationError as e:

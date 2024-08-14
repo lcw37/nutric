@@ -4,6 +4,13 @@ from fastapi import (
 from recipe_scrapers import scrape_html
 import requests
 
+from lib.estimate import (
+    get_confidence_score,
+    get_followup,
+    get_estimate
+)
+from lib.models import EstimateFormData
+
 
 app = FastAPI()
 
@@ -22,3 +29,13 @@ async def analyze():
     }
 
 
+
+@app.post('/estimate')
+async def estimate(formdata: EstimateFormData):
+    description = formdata.get('description')
+    score = get_confidence_score(description)
+    if score < 7:
+        followup = get_followup(description)
+        return {
+            
+        }
