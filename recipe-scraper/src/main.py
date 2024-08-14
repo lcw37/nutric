@@ -1,9 +1,9 @@
 from fastapi import (
     FastAPI, 
+    HTTPException
 )
 from recipe_scrapers import scrape_html
 import requests
-
 from lib.estimate import (
     get_confidence_score,
     get_followup,
@@ -14,8 +14,7 @@ from lib.models import EstimateFormData
 
 app = FastAPI()
 
-# @app.post("/analyze")
-# async def analyze(url: str):
+
 @app.get('/scraper')
 async def analyze():
     url = 'https://cafedelites.com/authentic-chimichurri-uruguay-argentina/'
@@ -29,6 +28,8 @@ async def analyze():
 
 @app.post('/estimate')
 async def estimate(formdata: EstimateFormData):
+    if not (formdata.followup and formdata.followup_response):
+        raise HTTPException(400, 'Missing followup or response.')
     cs = get_confidence_score(formdata.description)
     if not formdata.followup:
         if cs < 7:
