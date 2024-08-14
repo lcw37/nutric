@@ -36,7 +36,13 @@ estimate_prompt = """
     Try to make a reasonable estimate of the nutrition facts from this description that is within plus-minus 50 calories of the actual value.
 
     Respond with a estimate of min-max range pairs for each field in {nutrient_fields} as JSON:
-    {{<field>: [<min: number>, <max: number>, <unit: string>], }}. Only return the JSON string.
+    {{
+        <field>: {{
+            min: <number>, 
+            max: <number>, 
+            unit: <string>]
+        }}
+    }}. Only return the JSON string.
     
     Examples:
     Input 1: \"a tofu salad\"
