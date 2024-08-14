@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 from openai import OpenAI
 import json
+from lib.typing import NutritionEstimate
 
 
 load_dotenv()
@@ -45,27 +46,38 @@ def get_followup(description: str) -> str:
 
 def get_estimate(
     description: str, 
-    followup: str,
-    followup_response: str
-) -> dict:
+    followup: str = None,
+    followup_response: str = None
+) -> NutritionEstimate:
+    followup_info = ''
+    if followup and followup_response:
+        followup_info = prompts.followup_info_prompt.format(
+            followup=followup, 
+            followup_response=followup_response
+        )
     p = prompts.estimate_prompt.format(
         description=description,
-        followup=followup,
-        followup_response=followup_response
+        followup_info=followup_info
     )
     try:
         r = response(p)
         r = json.loads(r)
-        estimate: dict = r
+        estimate = NutritionEstimate(**r)
         return estimate
     except Exception:
         raise Exception('Failed to get estimate.')
+    
 
-
-# print('confidence_score:', get_confidence_score(prompts.sample_description))
-# print('followup:', get_followup(prompts.sample_description))
-# print('estimate:', get_estimate(
-#     prompts.sample_description,
-#     prompts.sample_followup,
-#     prompts.sample_followup_response
-# ))
+def run_estimate_process():
+    description = input('DESCRIPTION: ')
+    cs = get_confidence_score(description)
+    if cs < 7:
+        followup = get_followup(description)
+        print('FOLLOWUP:', followup)
+        followup_response = input('RESPONSE: ')
+        estimate = get_estimate(description, followup, followup_response)
+    else:
+        estimate = get_estimate(description)
+    print(estimate)
+    
+    
