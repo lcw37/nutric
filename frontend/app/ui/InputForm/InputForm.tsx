@@ -50,7 +50,7 @@ export default function InputForm() {
         }
 
         // if there was a followup, attach to FormData (because it isn't auto-included on submit)
-        if (prevState.data.followup) { payload.append('followup', prevState.data.followup) }
+        if (prevState.data?.followup) { payload.append('followup', prevState.data.followup) }
         const res = await submitMealDescription(payload)
         return res
     }

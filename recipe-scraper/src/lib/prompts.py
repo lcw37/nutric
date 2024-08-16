@@ -17,7 +17,8 @@ followup_prompt = """
     Given the following description of food:
     {description}
 
-    Suppose you need to try to make a reasonable estimate of the nutrition facts from this description that is within plus-minus 50 calories of the actual value. Other than exact portion sizes, what additional information could the user provide you to help you make a better estimate?
+    Suppose you need to try to make a reasonable estimate of the nutrition facts from this description that is within plus-minus 50 calories of the actual value. 
+    Other than exact portion sizes, what additional information could the user provide you to help you make a better estimate? Assume you are estimating for 1 serving.
 
     Respond with a string of at most 2 questions as JSON:
     {{\"followup\": <string of questions>}}. Only return the JSON string.
