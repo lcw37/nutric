@@ -1,6 +1,8 @@
 'use server'
 
 
+const apiBaseUrl = process.env.BACKEND_API_URL || 'http://localhost:8000'
+
 export async function pingBackend() {
     const res = await fetch('http://localhost:8000/ping')
     const pong = await res.json()
@@ -16,7 +18,7 @@ export async function submitMealDescription(payload: any) {
         followup: payload.get('followup'),
         followup_response: payload.get('followup_response')
     }
-    const res = await fetch('http://127.0.0.1:8000/estimate', {
+    const res = await fetch(`${apiBaseUrl}/estimate`, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -32,7 +34,7 @@ export async function submitRecipeURL(payload: any) {
     const data = {
         recipe_url: payload.get('description').trim()
     }
-    const res = await fetch('http://127.0.0.1:8000/recipe', {
+    const res = await fetch(`${apiBaseUrl}/recipe`, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
