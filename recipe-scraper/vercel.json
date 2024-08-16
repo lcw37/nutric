@@ -13,6 +13,6 @@
       }
     ],
     "env": {
-        "PYTHONPATH": "src/"
+        "PYTHONPATH": "src/lib"
     }
   }
