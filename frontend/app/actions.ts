@@ -4,7 +4,7 @@
 const apiBaseUrl = process.env.BACKEND_API_URL || 'http://localhost:8000'
 
 export async function pingBackend() {
-    const res = await fetch('http://localhost:8000/ping')
+    const res = await fetch(`${apiBaseUrl}/ping`)
     const pong = await res.json()
     console.log(pong)
     return pong
