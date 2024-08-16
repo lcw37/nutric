@@ -14,7 +14,7 @@ class MinMaxPair(BaseModel):
         return v
     
     
-class NutritionValues(BaseModel):
+class NutritionBreakdown(BaseModel):
     calories: MinMaxPair | None = None
     carbs: MinMaxPair | None = None
     fat: MinMaxPair | None = None
