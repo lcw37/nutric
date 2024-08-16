@@ -41,7 +41,7 @@ python-dotenv==1.0.1
 python-multipart==0.0.9
 PyYAML==6.0.2
 rdflib==7.0.0
--e git+https://github.com/lcw37/nutrition-nlp.git@c130fafab1cfbb6f21370cc346350dd765a05323#egg=recipe_scraper&subdirectory=recipe-scraper
+# -e git+https://github.com/lcw37/nutrition-nlp.git@c130fafab1cfbb6f21370cc346350dd765a05323#egg=recipe_scraper&subdirectory=recipe-scraper
 recipe_scrapers==15.0.0
 requests==2.32.3
 rich==13.7.1
