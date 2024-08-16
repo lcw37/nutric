@@ -1,5 +1,4 @@
-import requests
-from recipe_scrapers import scrape_html, WebsiteNotImplementedError
+from recipe_scrapers import WebsiteNotImplementedError
 from fastapi import (
     FastAPI, 
     HTTPException,
