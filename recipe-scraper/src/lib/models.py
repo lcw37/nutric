@@ -1,4 +1,4 @@
-from pydantic import BaseModel, PositiveInt, field_validator
+from pydantic import BaseModel, PositiveInt, field_validator, AnyUrl
 
 
 class MinMaxPair(BaseModel):
@@ -21,7 +21,10 @@ class NutritionValues(BaseModel):
     protein: MinMaxPair | None = None
 
 class EstimateFormData(BaseModel):
-    description: str | None = None
+    description: str | None # not optional?
     nutrient_fields: list[str] | None = None
     followup: str | None = None
     followup_response: str | None = None
+    
+class RecipeFormData(BaseModel):
+    recipe_url: AnyUrl
