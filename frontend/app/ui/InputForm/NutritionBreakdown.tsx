@@ -36,9 +36,14 @@ export function NutritionBreakdownFromRecipe({
 }: { 
     estimateFromRecipe: any
 }) {
-    const [servings, setServings] = useState(1.0)
-    function handleServingsChange(e: any) {setServings(e.target.value)}
-    
+    const [servings, setServings] = useState('1.0') // set as string so trailing decimal points can work
+    function handleServingsChange(e: any) {
+        let newServings = e.target.value
+        if (newServings === '.') { newServings = '0.' } // edge case: input is '.'
+        if (!Number.isNaN(newServings)) {
+            setServings(newServings)
+        }
+    }
     return (
         <Card>
             <CardHeader>
@@ -50,7 +55,7 @@ export function NutritionBreakdownFromRecipe({
                 {Object.keys(estimateFromRecipe).map((k) => (
                     <div className="flex items-center justify-between" key={k}>
                         <span>{k}</span>
-                        <span className="font-medium">{+(servings * estimateFromRecipe[k].val).toFixed(1)} {estimateFromRecipe[k].unit}</span>
+                        <span className="font-medium">{+(Number(servings) * estimateFromRecipe[k].val).toFixed(1)} {estimateFromRecipe[k].unit}</span>
                     </div>
                 ))}
             </CardContent>
