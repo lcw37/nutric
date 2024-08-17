@@ -55,7 +55,7 @@ export function NutritionBreakdownFromRecipe({
                 {Object.keys(estimateFromRecipe).map((k) => (
                     <div className="flex items-center justify-between" key={k}>
                         <span>{k}</span>
-                        <span className="font-medium">{+(Number(servings) * estimateFromRecipe[k].val).toFixed(1)} {estimateFromRecipe[k].unit}</span>
+                        <span className="font-medium">{+(Number(servings) * estimateFromRecipe[k].min).toFixed(1)} {estimateFromRecipe[k].unit}</span>
                     </div>
                 ))}
             </CardContent>
