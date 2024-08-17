@@ -1,9 +1,9 @@
-from pydantic import BaseModel, PositiveInt, field_validator, AnyUrl
+from pydantic import BaseModel, NonNegativeInt, field_validator, AnyUrl
 
 
 class MinMaxPair(BaseModel):
-    min: PositiveInt
-    max: PositiveInt = lambda self: self.min # default to min
+    min: NonNegativeInt
+    max: NonNegativeInt = lambda self: self.min # default to min
     unit: str
     
     @field_validator('max')
