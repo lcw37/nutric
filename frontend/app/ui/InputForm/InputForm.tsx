@@ -1,7 +1,7 @@
 'use client'
 
 
-import React from "react"
+import React, { useRef } from "react"
 import { useFormState, useFormStatus } from "react-dom"
 
 import { Card, CardHeader, CardContent } from "@/components/ui/card"
@@ -28,6 +28,7 @@ function SubmitButton() {
     )
 }
 
+
 export default function InputForm() {
     const [state, formAction] = useFormState(handleFormSubmit, {
         response_type: null,
@@ -38,17 +39,28 @@ export default function InputForm() {
         },
         estimate: null
     })
+    const followupTextAreaRef = useRef<HTMLTextAreaElement>(null)
 
     async function handleFormSubmit(prevState: any, payload: any) {
-        // if a URL was submitted:
+        // ~~~ if input is a URL:
         if (isUrl(payload.get('description'))) {
             const res = await submitRecipeURL(payload)
-            const output = {
-                estimateFromRecipe: res.nutrients
-            }
-            return output
+            console.log(res)
+            return res
+            // const output = {
+            //     estimateFromRecipe: res.estimate
+            // }
+            // return output
+            
         }
-
+        // ~~~ else if input is a text description:
+        // if the initial description was changed, remove existing followup, then regenerate followup/estimate
+        if (prevState.data.description !== payload.get('description')) {
+            prevState.data.followup = null
+            // prevState.data.followup_response = null
+            payload.delete('followup_response')
+            if (followupTextAreaRef.current) { followupTextAreaRef.current.value = '' }
+        }
         // if there was a followup, attach to FormData (because it isn't auto-included on submit)
         if (prevState.data?.followup) { payload.append('followup', prevState.data.followup) }
         const res = await submitMealDescription(payload)
@@ -59,7 +71,9 @@ export default function InputForm() {
         <div className="w-full max-w-md mx-auto space-y-8 py-0">
             <div className="text-left">
                 <h1 className="text-3xl font-bold">nutrition calc</h1>
-                <p className="text-muted-foreground">describe your meal or enter a recipe url to get a nutrient breakdown.</p>
+                <p className="text-muted-foreground">
+                    input a <span className="text-green-700 font-semibold">meal description</span> or a <span className="text-green-700 font-semibold">recipe url</span> to get a nutrient breakdown.
+                </p>
             </div>
 
             {/* Enter meal description */}
@@ -70,23 +84,20 @@ export default function InputForm() {
                     <Label htmlFor="description">description / url</Label>
                     <Textarea
                         name="description"
-                        placeholder="describe your meal or enter a recipe url..."
                         className="min-h-[80px]"
-                        readOnly={state.data?.followup || state.estimate}
                         required
                     />
                     {/* If followup is received */}
                     {state.data?.followup && (
                         <div className="grid gap-3 mt-3">
                             <Label htmlFor="followup_response" className="m-100">
-                                {state.data?.followup.toLowerCase()}
+                                {state.data.followup.toLowerCase()}
                             </Label>
                             <Textarea
                                 name="followup_response"
-                                placeholder="Enter your response"
+                                ref={followupTextAreaRef}
                                 className="min-h-[80px]"
-                                //   readOnly={state.estimate}
-                                required
+                                required={false}
                             />
                         </div>
                     )}

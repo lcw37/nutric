@@ -16,6 +16,7 @@ def get_nutrition_from_url(
     if nutrient_fields is None:
         nutrient_fields = list(nutrients.keys())
     for k in nutrient_fields:
+
         if k == 'servingSize': # ignore servingSize
             continue
         
@@ -23,6 +24,9 @@ def get_nutrition_from_url(
         
         if k[-7:] == 'Content': # strip 'Content' from the end
             k = k[:-7]
+        
+        if k == 'carbohydrate':
+            k = 'carbs'
             
         parsed_nutrients[k] = {'min': amount, 'max': amount,'unit': unit}
     return NutritionBreakdown(**parsed_nutrients)

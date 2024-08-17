@@ -24,16 +24,21 @@ async def ping():
         'message': 'pong'
     }
 
+
 @app.post('/recipe')
 async def recipe(formdata: RecipeFormData):
     try:
         url = str(formdata.recipe_url)
         nutrition_breakdown = get_nutrition_from_url(url)
         return {
-            'nutrients': nutrition_breakdown
+            'response_type': 'estimate',
+            'data': formdata,
+            'estimateFromRecipe': nutrition_breakdown
         }
+        
     except WebsiteNotImplementedError:
         raise HTTPException(400, f'Website not supported: {url}')
+    
 
 @app.post('/estimate')
 async def estimate(formdata: EstimateFormData):
