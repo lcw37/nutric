@@ -40,9 +40,7 @@ export function NutritionBreakdownFromRecipe({
     function handleServingsChange(e: any) {
         let newServings = e.target.value
         if (newServings === '.') { newServings = '0.' } // edge case: input is '.'
-        if (!Number.isNaN(newServings)) {
-            setServings(newServings)
-        }
+        if (!Number.isNaN(newServings)) { setServings(newServings) }
     }
     return (
         <Card>

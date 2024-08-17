@@ -2,6 +2,7 @@
 
 
 const apiBaseUrl = process.env.BACKEND_API_URL || 'http://localhost:8000'
+console.log(`frontend connected to: ${apiBaseUrl}`)
 
 export async function pingBackend() {
     const res = await fetch(`${apiBaseUrl}/ping`)
