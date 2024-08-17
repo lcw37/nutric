@@ -8,11 +8,10 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { NutritionBreakdownFromDescription, NutritionBreakdownFromRecipe } from "./NutritionBreakdown"
+import NutritionBreakdownCard from "./NutritionBreakdown"
 
 import { submitMealDescription, submitRecipeURL } from "../../actions"
 import isUrl from 'is-url-superb'
-
 
 
 function SubmitButton() {
@@ -108,11 +107,11 @@ export default function InputForm() {
 
             {/* View nutrition breakdown */}
             {state.estimate && (
-                <NutritionBreakdownFromDescription estimate={state.estimate} />
+                <NutritionBreakdownCard estimate={state.estimate} type="fromDescription" />
             )}
 
             {state.estimateFromRecipe && (
-                <NutritionBreakdownFromRecipe estimateFromRecipe={state.estimateFromRecipe}/>
+                <NutritionBreakdownCard estimate={state.estimateFromRecipe} type="fromRecipe"/>
             )}
         </div>
     )
