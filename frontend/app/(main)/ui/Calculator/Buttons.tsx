@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from "@/components/ui/button";
 import { useUser } from "@stackframe/stack";
 import Link from "next/link";

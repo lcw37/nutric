@@ -1,10 +1,14 @@
+'use client'
+
 import Link from "next/link"
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button";
+import { useUser } from "@stackframe/stack";
 
 
 export default function NavMenu() {
+    const user = useUser()
     return (
         <header className="p-10">
             {/* medium screens and larger */}
