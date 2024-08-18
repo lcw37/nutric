@@ -1,5 +1,5 @@
 import { pingBackend } from "./actions";
-import InputForm from "./ui/InputForm/InputForm";
+import InputForm from "./ui/Calculator/InputForm";
 
 
 export default async function Home() {
