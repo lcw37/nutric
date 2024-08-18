@@ -2,30 +2,16 @@
 
 
 import React, { useRef } from "react"
-import { useFormState, useFormStatus } from "react-dom"
+import { useFormState } from "react-dom"
 
 import { Card, CardHeader, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import NutritionBreakdownCard from "./NutritionBreakdown"
+import { SubmitButton } from "./Buttons"
 
 import { submitMealDescription, submitRecipeURL } from "../../actions"
 import isUrl from 'is-url-superb'
-
-
-function SubmitButton() {
-    const formStatus = useFormStatus()
-        return (
-            <Button 
-                type="submit" 
-                className="w-full" 
-                disabled={formStatus.pending}
-            >
-                submit
-            </Button>
-    )
-}
 
 
 export default function InputForm() {

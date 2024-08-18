@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { AddToLogButton } from "./Buttons"
 
 
 export default function NutritionBreakdownCard(
@@ -41,6 +42,7 @@ export default function NutritionBreakdownCard(
                         )}
                     </div>
                 ))}
+                <AddToLogButton />
             </CardContent>
         </Card>
     )
