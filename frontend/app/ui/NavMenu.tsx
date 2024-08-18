@@ -8,7 +8,7 @@ export default function NavMenu() {
     return (
         <header className="p-10">
             {/* medium screens and larger */}
-            <div className="top-0 z-40 w-full bg-background">
+            <div className="top-0 z-40 w-full bg-background m-4">
                 <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
                     <Link href="/handler/sign-up" className="hover:text-green-700">
                         sign up
