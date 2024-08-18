@@ -1,11 +1,21 @@
 import { Button } from "@/components/ui/button";
+import { useUser } from "@stackframe/stack";
+import Link from "next/link";
 import { useFormStatus } from "react-dom";
 
 
 export function AddToLogButton() {
+    const currentUser = useUser()
+    if (currentUser) {
+        return (
+            <Button>
+                    add to my log
+            </Button>
+        )
+    }
     return (
         <Button>
-            add to my log
+            <Link href="/handler/sign-up">log in to save logs</Link>
         </Button>
     )
 }
