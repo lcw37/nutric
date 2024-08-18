@@ -12,6 +12,7 @@ import { SubmitButton } from "./Buttons"
 
 import { submitMealDescription, submitRecipeURL } from "../../actions"
 import isUrl from 'is-url-superb'
+import { Button } from "@/components/ui/button"
 
 
 export default function InputForm() {
@@ -24,19 +25,26 @@ export default function InputForm() {
         },
         estimate: null
     })
-    const followupTextAreaRef = useRef<HTMLTextAreaElement>(null)
 
+    const descriptionTextAreaRef = useRef<HTMLTextAreaElement>(null)
+    const followupTextAreaRef = useRef<HTMLTextAreaElement>(null)
+    function setDescription(text: string) {
+        if (descriptionTextAreaRef.current) { 
+            descriptionTextAreaRef.current.value = text 
+        }
+    }
+    function setFollowup(text: string) {
+        if (followupTextAreaRef.current) { 
+            followupTextAreaRef.current.value = text 
+        }
+    }
+        
     async function handleFormSubmit(prevState: any, payload: any) {
         // ~~~ if input is a URL:
         if (isUrl(payload.get('description'))) {
             const res = await submitRecipeURL(payload)
             console.log(res)
             return res
-            // const output = {
-            //     estimateFromRecipe: res.estimate
-            // }
-            // return output
-            
         }
         // ~~~ else if input is a text description:
         // if the initial description was changed, remove existing followup, then regenerate followup/estimate
@@ -44,7 +52,7 @@ export default function InputForm() {
             prevState.data.followup = null
             // prevState.data.followup_response = null
             payload.delete('followup_response')
-            if (followupTextAreaRef.current) { followupTextAreaRef.current.value = '' }
+            setFollowup('')
         }
         // if there was a followup, attach to FormData (because it isn't auto-included on submit)
         if (prevState.data?.followup) { payload.append('followup', prevState.data.followup) }
@@ -54,11 +62,28 @@ export default function InputForm() {
 
     return (
         <div className="w-full max-w-md mx-auto space-y-8 py-0">
-            <div className="text-left">
+            <div className="text-left grid gap-4">
                 <h1 className="text-3xl font-bold">nutrition calc</h1>
                 <p className="text-muted-foreground">
                     input a <span className="text-green-700 font-semibold">meal description</span> or a <span className="text-green-700 font-semibold">recipe url</span> to get a nutrient breakdown.
                 </p>
+                <div className="text-muted-foreground">
+                    <div className="flex gap-4 items-center">
+                        <span>want a quick demo?</span>
+                        <Button
+                            variant="outline"
+                            onClick={() => setDescription('baked eggplant parm, baked carrots, and a slice of whole wheat bread')}
+                        >
+                            description
+                        </Button>
+                        <Button 
+                            variant="outline" 
+                            onClick={() => setDescription('https://cafedelites.com/authentic-chimichurri-uruguay-argentina/')}
+                        >
+                            recipe
+                        </Button>
+                    </div>
+                </div>
             </div>
 
             {/* Enter meal description */}
@@ -69,6 +94,7 @@ export default function InputForm() {
                     <Label htmlFor="description">description / url</Label>
                     <Textarea
                         name="description"
+                        ref={descriptionTextAreaRef}
                         className="min-h-[80px]"
                         required
                     />
