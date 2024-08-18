@@ -4,34 +4,31 @@ import Link from "next/link"
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button";
-import { useUser } from "@stackframe/stack";
-
+import { useUser, UserButton } from "@stackframe/stack";
+import { Separator } from "@/components/ui/separator";
 
 export default function NavMenu() {
     const user = useUser()
     return (
         <header className="p-10">
             {/* medium screens and larger */}
-            <div className="top-0 z-40 w-full bg-background m-4">
-                <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
-                    {user && (
-                        <Link href="/handler/sign-up" className="hover:text-green-700">
-                            profile
-                        </Link>
-                    )}
-                    {!user && (
-                        <>
-                            <Link href="/handler/sign-up" className="hover:text-green-700">
+            <div className="top-0 z-40 w-full bg-background">
+                <nav className="hidden place-items-center gap-6 text-sm font-medium md:flex md:justify-between">
+                    <Link href="/" className="hover:text-green-700">
+                        calculator
+                    </Link>
+                    {user ? (
+                        <UserButton />
+                    ) : (
+                        <div className="flex gap-6">
+                            <Link href="/handler/sign-in" className="hover:text-green-700">
                                 log in
                             </Link>
                             <Link href="/handler/sign-up" className="hover:text-green-700">
                                 sign up
                             </Link>
-                        </>
+                        </div>
                     )}
-                    <Link href="/" className="hover:text-green-700">
-                        calculator
-                    </Link>
                 </nav>
             </div>
             
@@ -44,15 +41,45 @@ export default function NavMenu() {
                 </SheetTrigger>
                 <SheetContent side="left" className="md:hidden">
                     <nav className="grid gap-2 w-[300px] p-4">
-                        <Link href="/handler/sign-up" className="hover:text-green-700">
-                            sign up
-                        </Link>
-                        <Link href="/" className="hover:text-green-700">
-                            calculator
-                        </Link>
-                        <Link href="/handler/account-settings" className="hover:text-green-700">
-                            settings
-                        </Link>
+                        {user ? (
+                            <>
+                                <SheetTrigger asChild>
+                                    <Link href="/" className="hover:text-green-700">
+                                        calculator
+                                    </Link>
+                                </SheetTrigger>
+                                <Separator />
+                                <SheetTrigger asChild>
+                                    <Link href="/handler/account-settings" className="hover:text-green-700">
+                                        profile
+                                    </Link>
+                                </SheetTrigger>
+                                <SheetTrigger asChild>
+                                    <Link href="/handler/account-settings" className="hover:text-green-700">
+                                        sign out
+                                    </Link>
+                                </SheetTrigger>
+                            </>
+                        ) : (
+                            <>
+                                <SheetTrigger asChild>
+                                    <Link href="/handler/sign-in" className="hover:text-green-700">
+                                        log in
+                                    </Link>
+                                </SheetTrigger>
+                                <SheetTrigger asChild>
+                                    <Link href="/handler/sign-up" className="hover:text-green-700">
+                                        sign up
+                                    </Link>
+                                </SheetTrigger>
+                                    <Separator />
+                                <SheetTrigger asChild>
+                                    <Link href="/" className="hover:text-green-700">
+                                        calculator
+                                    </Link>
+                                </SheetTrigger>
+                            </>
+                        )}
                     </nav>
                 </SheetContent>
             </Sheet>
