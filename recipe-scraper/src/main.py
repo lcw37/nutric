@@ -17,12 +17,6 @@ from .lib.recipes import get_nutrition_from_url
 app = FastAPI()
 
 
-@app.get('/')
-async def home():
-    return {
-        'message': 'rootß'
-    }
-
 @app.get('/ping')
 async def ping():
     print('pinged from frontend')
