@@ -5,12 +5,12 @@ from fastapi import (
 )
 
 from .lib.models import EstimateFormData, RecipeFormData, EstimateResponse
-from .lib.estimate import (
+from .lib.estimate.estimate import (
     get_confidence_score,
     get_followup,
     get_estimate
 )
-from .lib.recipes import get_nutrition_from_url
+from .lib.estimate.recipes import get_nutrition_from_url
 
 
 

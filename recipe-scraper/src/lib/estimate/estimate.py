@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import os
 from openai import OpenAI
 import json
-from .models import NutritionBreakdown, EstimateFormData
+from ..models import NutritionBreakdown, EstimateFormData
 from pydantic import ValidationError
 
 

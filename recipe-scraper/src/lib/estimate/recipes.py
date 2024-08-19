@@ -1,7 +1,7 @@
 from recipe_scrapers import scrape_html
 import requests
 import re
-from .models import NutritionBreakdown
+from ..models import NutritionBreakdown
 
 
 def get_nutrition_from_url(

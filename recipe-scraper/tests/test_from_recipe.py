@@ -1,4 +1,4 @@
-from src.lib.recipes import (
+from src.lib.estimate.recipes import (
     get_nutrition_from_url, 
     parse_macro
 )
