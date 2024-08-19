@@ -14,6 +14,8 @@ from .lib.estimate.estimate import (
 )
 from .lib.estimate.recipes import get_nutrition_from_url
 
+if _: # see /lib/setup.py, this is just to fix a linting warning
+    pass
 
 app = FastAPI()
 
