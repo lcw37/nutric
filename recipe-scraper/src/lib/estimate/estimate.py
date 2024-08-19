@@ -1,5 +1,4 @@
 from . import prompts
-from dotenv import load_dotenv
 import os
 from openai import OpenAI
 import json
@@ -7,9 +6,7 @@ from ..models import NutritionBreakdown, EstimateFormData
 from pydantic import ValidationError
 
 
-load_dotenv()
-client = OpenAI()
-client.api_key = os.environ['OPENAI_API_KEY']
+client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
 model = 'gpt-4o-mini'
 
 

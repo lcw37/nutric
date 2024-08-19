@@ -1,3 +1,5 @@
+from .lib.setup import _
+
 from recipe_scrapers import WebsiteNotImplementedError
 from fastapi import (
     FastAPI, 
@@ -11,7 +13,6 @@ from .lib.estimate.estimate import (
     get_estimate
 )
 from .lib.estimate.recipes import get_nutrition_from_url
-
 
 
 app = FastAPI()
