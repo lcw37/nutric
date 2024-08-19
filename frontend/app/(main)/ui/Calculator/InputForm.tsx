@@ -43,7 +43,6 @@ export default function InputForm() {
         // ~~~ if input is a URL:
         if (isUrl(payload.get('description'))) {
             const res = await submitRecipeURL(payload)
-            console.log(res)
             return res
         }
         // ~~~ else if input is a text description:
@@ -118,12 +117,12 @@ export default function InputForm() {
             </Card>
 
             {/* View nutrition breakdown */}
-            {state.estimate && (
+            {state.response_type === 'estimateFromDescription' && (
                 <NutritionBreakdownCard estimate={state.estimate} type="fromDescription" />
             )}
 
-            {state.estimateFromRecipe && (
-                <NutritionBreakdownCard estimate={state.estimateFromRecipe} type="fromRecipe"/>
+            {state.response_type === 'estimateFromRecipe' && (
+                <NutritionBreakdownCard estimate={state.estimate} type="fromRecipe"/>
             )}
         </div>
     )

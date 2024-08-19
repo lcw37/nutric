@@ -31,7 +31,8 @@ def get_nutrition_from_url(
         parsed_nutrients[k] = {'min': amount, 'max': amount,'unit': unit}
     return NutritionBreakdown(**parsed_nutrients)
 
-def parse_macro(text: str) -> list[int, str] | None | str:
+
+def parse_macro(text: str) -> list[float, str] | str | None:
     """
     possible structures for macro: '100g', '100 g', '100 g of protein'
     possible units: 'g', 'mg', 'cal', 'kcal'
@@ -44,4 +45,4 @@ def parse_macro(text: str) -> list[int, str] | None | str:
         if unit == 'kcal':
             unit = 'cal'
         return [amount, unit]
-    return [1, text]
+    return [1.0, text]
