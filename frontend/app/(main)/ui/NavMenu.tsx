@@ -1,7 +1,6 @@
 'use client'
 
 import Link from "next/link"
-import Image from "next/image";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button";
@@ -11,23 +10,13 @@ import { Separator } from "@/components/ui/separator";
 
 function Logo() {
     return (
-        <>
-        <Image
-            src="/logo-black.png"
-            width={70}
-            height={30}
-            alt="logo"
-            objectFit="cover"
-        />
-        <Image 
-            src="/logo-green.png" 
-            alt="Hover Image" 
-            width={70} 
-            height={30} 
-            objectFit="cover" 
-            className="absolute opacity-0 transition-opacity duration-200 hover:opacity-100" 
-        />
-        </>
+        <button>
+            <Link
+                href="/"
+                className="w-full bg-emerald-600 font-mono text-white px-3 py-1 rounded-bl-lg rounded-tr-lg hover:bg-black transition-colors duration-200">
+                nutric
+            </Link>
+        </button>
     )
 }
 
@@ -61,11 +50,14 @@ export default function NavMenu() {
             
             {/* mobile devices */}
             <Sheet>
-                <SheetTrigger asChild>
-                    <Button size="icon" variant="ghost" className="md:hidden">
-                        <HamburgerMenuIcon />
-                    </Button>
-                </SheetTrigger>
+                <div className="flex justify-between md:hidden">
+                    <SheetTrigger asChild>
+                        <Button size="icon" variant="ghost">
+                            <HamburgerMenuIcon />
+                        </Button>
+                    </SheetTrigger>
+                    <Logo />
+                </div>
                 <SheetContent side="left" className="md:hidden">
                     <nav className="grid gap-2 w-[300px] p-4">
                         {user ? (
