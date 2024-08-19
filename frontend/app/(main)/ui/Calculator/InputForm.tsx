@@ -65,7 +65,7 @@ export default function InputForm() {
             <div className="text-left grid gap-4">
                 <h1 className="text-3xl font-bold">nutrition calc</h1>
                 <p className="text-muted-foreground">
-                    input a <span className="text-green-700 font-semibold">meal description</span> or a <span className="text-green-700 font-semibold">recipe url</span> to get a nutrient breakdown.
+                    input a <span className="text-emerald-600 font-semibold">meal description</span> or a <span className="text-emerald-600 font-semibold">recipe url</span> to get a nutrient breakdown.
                 </p>
                 <div className="text-muted-foreground">
                     <div className="flex gap-4 items-center">
