@@ -6,13 +6,13 @@ import { AddToLogButton } from "./Buttons"
 
 
 export default function NutritionBreakdownCard({ 
-    type,
+    estimateType,
     data,
-    estimate
+    estimate,
 }: { 
-    type: 'fromDescription' | 'fromRecipe',
+    estimateType: 'fromDescription' | 'fromRecipe',
     data: any,
-    estimate: any
+    estimate: any,
 }) {
     const [servings, setServings] = useState('1.0') // set as string so trailing decimal points can work
     function handleServingsChange(e: any) {
@@ -31,12 +31,12 @@ export default function NutritionBreakdownCard({
                 {Object.keys(estimate).map((k) => (
                     <div className="flex items-center justify-between" key={k}>
                         <span>{k}</span>
-                        {(type === 'fromDescription') && (
+                        {(estimateType === 'fromDescription') && (
                             <span className="font-medium">
                                 {+(Number(servings) * estimate[k].min).toFixed(1)}-{+(Number(servings) * estimate[k].max).toFixed(1)} {estimate[k].unit}
                             </span>
                         )}
-                        {(type === 'fromRecipe') && (
+                        {(estimateType === 'fromRecipe') && (
                             <span className="font-medium">
                                 {+(Number(servings) * estimate[k].min).toFixed(1)} {estimate[k].unit}
                             </span>

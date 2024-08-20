@@ -2,6 +2,7 @@
 
 
 import { createHash } from "crypto"
+import { revalidatePath } from "next/cache"
 
 const apiBaseUrl = process.env.BACKEND_API_URL || 'http://localhost:8000'
 console.log(`frontend connected to: ${apiBaseUrl}`)
@@ -73,17 +74,51 @@ export async function createEntry(payload: any) {
         },
         body: JSON.stringify(payload)
     })
+    revalidatePath('/log')
     return await res.json()
 }
 
 
-export async function readAllEntries(userId: string) {
-    const res = await fetch(`${apiBaseUrl}/entries`, {
+
+export async function readAllEntries(
+    userId: string,
+    options: {
+        entry_date?: string,
+        limit?: number,
+        offset?: number
+    }
+) {
+    const { entry_date, limit=20, offset=0 } = options
+    const queryParams = new URLSearchParams()
+    if (entry_date) {queryParams.append('entry_date', entry_date)}
+    queryParams.append('limit', limit.toString())
+    queryParams.append('offset', offset.toString())
+
+    const url = `${apiBaseUrl}/entries?${queryParams.toString()}`
+    console.log(url)
+    const res = await fetch(url, {
         method: 'GET',
         headers: {
             'X-UserId': userId,
             'X-HashedUserId': hashUserId(userId)
         }
+    })
+    return await res.json()
+}
+
+export async function updateEntry(
+    entryId: string,
+    payload: any
+) {
+    const userId = payload.author_id
+    const res = await fetch(`${apiBaseUrl}/entries/${entryId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-UserId': userId,
+            'X-HashedUserId': hashUserId(userId)
+        },
+        body: JSON.stringify(payload)
     })
     return await res.json()
 }

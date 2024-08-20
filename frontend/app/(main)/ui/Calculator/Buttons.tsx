@@ -20,8 +20,8 @@ export function AddToLogButton({
     if (user) {
         return (
             <Button
-                onClick={() => {
-                    createEntry({
+                onClick={async () => {
+                    await createEntry({
                         author_id: user.id,
                         data: data,
                         estimate: estimate,
@@ -39,6 +39,7 @@ export function AddToLogButton({
         </Button>
     )
 }
+
 
 export function SubmitButton() {
     const formStatus = useFormStatus()

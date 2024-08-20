@@ -3,7 +3,8 @@ from fastapi import (
     HTTPException,
     Body,
     Request,
-    Response
+    Response,
+    Query
 )
 from ..lib.models import (
     EntryCollection,
@@ -13,6 +14,7 @@ from ..lib.models import (
 from ..lib.db.mongodb import entries_collection
 from bson import ObjectId
 from pymongo import ReturnDocument
+from datetime import date, datetime
 
 
 router = APIRouter(prefix="/entries")
@@ -32,11 +34,24 @@ async def create_entry(entry: EntryModel = Body(...)):
     return created_entry
 
 
-# Read all entries authored by the user
+# Read all entries authored by the user, optionally filter by date, limit/offset
 @router.get('/', response_model=EntryCollection, response_model_by_alias=False)
-async def list_entries(req: Request):
+async def list_entries(
+    req: Request,
+    entry_date: str | None = Query(default=date.today().strftime('%m-%d-%Y')),
+    limit: int = Query(default=20, ge=1),
+    offset: int = Query(default=0, ge=0),
+):
     user_id = req.headers.get('X-UserId')
-    entries = await entries_collection.find({'author_id': user_id}).to_list(length=100) # max length to return, TODO: add skip/limit pagination
+    filter = {'author_id': user_id}
+    if entry_date: # check if entry_date is in correct format
+        try:
+            datetime.strptime(entry_date, '%m-%d-%Y')
+        except ValueError:
+            raise HTTPException(404, 'invalid date formate')
+        filter['entry_date'] = entry_date
+        
+    entries = await entries_collection.find(filter).skip(offset).limit(limit).to_list(length=limit)
     return EntryCollection(entries=entries)
 
 

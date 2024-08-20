@@ -118,7 +118,7 @@ export default function InputForm() {
             {/* View nutrition breakdown */}
             {state.response_type === 'estimateFromDescription' && (
                 <NutritionBreakdownCard 
-                    type="fromDescription" 
+                    estimateType="fromDescription" 
                     data={state.data}
                     estimate={state.estimate}
                 />
@@ -126,7 +126,7 @@ export default function InputForm() {
 
             {state.response_type === 'estimateFromRecipe' && (
                 <NutritionBreakdownCard 
-                    type="fromRecipe" 
+                    estimateType="fromRecipe" 
                     data={state.data}
                     estimate={state.estimate}
                 />

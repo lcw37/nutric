@@ -70,7 +70,7 @@ class EntryModel(BaseModel):
     data: Union[EstimateFormData, RecipeFormData] # original data that the estimate was generated from
     estimate: NutritionBreakdown
     servings: PositiveFloat
-    entry_date: str = date.today().strftime('%m/%d/%Y')
+    entry_date: str = date.today().strftime('%m-%d-%Y')
     
     model_config = ConfigDict(
         populate_by_name=True,
@@ -91,7 +91,7 @@ class UpdateEntryModel(BaseModel):
     @field_validator('entry_date')
     @classmethod
     def validate_entry_date(cls, entry_date):
-        datetime.strptime(entry_date, '%m/%d/%Y') # raises ValueError if invalid
+        datetime.strptime(entry_date, '%m-%d-%Y') # raises ValueError if invalid
         return entry_date
     
 class EntryCollection(BaseModel):
