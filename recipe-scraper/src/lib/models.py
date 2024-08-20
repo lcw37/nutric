@@ -1,7 +1,9 @@
-from pydantic import BaseModel, NonNegativeInt, field_validator, AnyUrl
+from pydantic import BaseModel, NonNegativeInt, field_validator, AnyUrl, PositiveFloat
 from typing import Literal, Union
+from datetime import date
 
 
+#  ~~~ API models
 class MinMaxPair(BaseModel):
     min: NonNegativeInt
     max: NonNegativeInt | None = None
@@ -21,6 +23,15 @@ class NutritionBreakdown(BaseModel):
     carbs: MinMaxPair | None = None
     fat: MinMaxPair | None = None
     protein: MinMaxPair | None = None
+    
+    @classmethod
+    def multiply_by_servings(cls, nb: 'NutritionBreakdown', servings: float) -> 'NutritionBreakdown':
+        data = nb.model_dump()
+        for k, v in data.items():
+            if isinstance(v, MinMaxPair):
+                data[k].min *= servings
+                data[k].max *= servings
+        return cls(**data)
 
 class EstimateFormData(BaseModel):
     description: str | None # not optional?
@@ -35,3 +46,12 @@ class EstimateResponse(BaseModel):
     response_type: Literal['followup', 'estimateFromDescription', 'estimateFromRecipe']
     data: Union[EstimateFormData, RecipeFormData]
     estimate: NutritionBreakdown | None = None
+
+    
+# ~~~ MongoDB models
+
+class Log(BaseModel):
+    data: Union[EstimateFormData, RecipeFormData] # original data that the estimate was generated from
+    estimate: NutritionBreakdown
+    servings: PositiveFloat
+    entry_date: date = date.today()
