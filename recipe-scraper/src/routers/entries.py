@@ -3,7 +3,6 @@ from fastapi import (
     HTTPException,
     Body,
     Request,
-    Response,
     Query
 )
 from ..lib.models import (
@@ -90,5 +89,6 @@ async def update_entry(id: str, entry: EntryModel):
 async def delete_entry(id: str):
     delete_result = await entries_collection.delete_one({'_id': ObjectId(id)})
     if delete_result.deleted_count == 1:
-        return Response(status_code=204)
+        # return Response(status_code=204)
+        return { 'message': f'successfully deleted entry {id}' }
     raise HTTPException(status_code=404, detail=f'student {id} not found.')

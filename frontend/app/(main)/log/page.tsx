@@ -18,7 +18,8 @@ import { Input } from '@/components/ui/input';
 
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
-import { readAllEntries, updateEntry } from '../actions';
+import { deleteEntry, readAllEntries, updateEntry } from '../actions';
+import Link from 'next/link';
 
 
 
@@ -74,36 +75,40 @@ export default function Log() {
                 </PopoverContent>
             </Popover>
                 {entries.map((entry: Entry, index: number) => (
-                    <NutritionBreakdownEditable key={index.toString() + date} entry={entry} />
+                    <EntryCard key={index.toString() + date} entry={entry} />
                 ))
             }
         </div>
     )
 }
 
-function NutritionBreakdownEditable({
+function EntryCard({
     entry
 }: {
     entry: any,
 }) {
-    const { estimate } = entry
-    const [servings, setServings] = useState(entry.servings) // set as string so trailing decimal points can work
-    function handleServingsChange(e: any) {
-        let newServings = e.target.value
-        if (newServings === '.') { newServings = '0.' } // edge case: input is '.'
-        if (!Number.isNaN(newServings)) { setServings(newServings) }
-    }
-    useEffect(() => {
-        setServings(entry.servings)
-    }, [entry])
+    const { estimate, servings } = entry
+    // const [servings, setServings] = useState(entry.servings) // set as string so trailing decimal points can work
+    // function handleServingsChange(e: any) {
+    //     let newServings = e.target.value
+    //     if (newServings === '.') { newServings = '0.' } // edge case: input is '.'
+    //     if (!Number.isNaN(newServings)) { setServings(newServings) }
+    // }
+    // useEffect(() => {
+    //     setServings(entry.servings)
+    // }, [entry])
     return (
         <Card>
             <CardHeader>
                 <CardTitle>nutrition breakdown</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4">
-                <Label>servings</Label>
-                <Input value={servings} onChange={handleServingsChange} />
+                {/* <Label>servings</Label> */}
+                {/* <Input value={servings} onChange={handleServingsChange} /> */}
+                <div className="flex items-center justify-between">
+                    <span>servings</span>
+                    <span className="font-medium">{servings}</span>
+                </div>
                 {Object.keys(estimate).map((k) => (
                     <div className="flex items-center justify-between" key={k}>
                         <span>{k}</span>
@@ -119,11 +124,25 @@ function NutritionBreakdownEditable({
                         )}
                     </div>
                 ))}
-                {/* <UpdateEntryButton 
-                    data={data}
-                    estimate={estimate}
-                    servings={Number(servings)}
-                /> */}
+                <div className="flex gap-4">
+                    <Link href={`/log/edit/${entry.id}`} className="flex-1">
+                        <Button variant="secondary" className="w-full">
+                            Edit
+                        </Button>
+                    </Link>
+                    <Button 
+                        variant="secondary" 
+                        className="flex-1 p-0"
+                        onClick={async () => {
+                            await deleteEntry(
+                                entry.id, {
+                                author_id: entry.author_id,
+                            })
+                        }}
+                    >
+                        Delete
+                    </Button>
+                </div>
             </CardContent>
         </Card>
     )
