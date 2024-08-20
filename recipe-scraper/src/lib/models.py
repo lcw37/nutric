@@ -79,4 +79,4 @@ class UpdateEntryModel(BaseModel):
     )
     
 class EntryCollection(BaseModel):
-    logs: list[EntryModel]
+    entries: list[EntryModel]
