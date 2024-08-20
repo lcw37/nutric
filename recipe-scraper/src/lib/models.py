@@ -1,6 +1,9 @@
-from pydantic import BaseModel, NonNegativeInt, field_validator, AnyUrl, PositiveFloat
-from typing import Literal, Union
+from pydantic import BaseModel, NonNegativeInt, field_validator, AnyUrl, PositiveFloat, Field, ConfigDict
+from pydantic.functional_validators import BeforeValidator
+from typing import Literal, Union, Optional
+from typing_extensions import Annotated
 from datetime import date
+from bson import ObjectId
 
 
 #  ~~~ API models
@@ -50,8 +53,30 @@ class EstimateResponse(BaseModel):
     
 # ~~~ MongoDB models
 
-class Log(BaseModel):
-    data: Union[EstimateFormData, RecipeFormData] # original data that the estimate was generated from
-    estimate: NutritionBreakdown
+PyObjectId = Annotated[str, BeforeValidator(str)]
+
+class EntryModel(BaseModel):
+    id: Optional[PyObjectId] = Field(alias='_id', default=None)
+    # data: Union[EstimateFormData, RecipeFormData] # original data that the estimate was generated from
+    # estimate: NutritionBreakdown
     servings: PositiveFloat
-    entry_date: date = date.today()
+    entry_date: str = date.today().strftime('%m/%d/%Y')
+    
+    model_config = ConfigDict(
+        populate_by_name=True,
+        arbitrary_types_allowed=True
+    )
+    
+class UpdateEntryModel(BaseModel):
+    data: Optional[Union[EstimateFormData, RecipeFormData]] = None
+    estimate: Optional[NutritionBreakdown] = None
+    servings: Optional[PositiveFloat] = None
+    entry_date: Optional[date] = None
+    
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        json_encoders={ObjectId: str}
+    )
+    
+class EntryCollection(BaseModel):
+    logs: list[EntryModel]

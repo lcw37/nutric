@@ -4,15 +4,24 @@ from recipe_scrapers import WebsiteNotImplementedError
 from fastapi import (
     FastAPI, 
     HTTPException,
+    Body
 )
 
-from .lib.models import EstimateFormData, RecipeFormData, EstimateResponse
+from .lib.models import (
+    EstimateFormData, 
+    RecipeFormData, 
+    EstimateResponse,
+    EntryModel,
+    UpdateEntryModel,
+)
 from .lib.estimate.estimate import (
     get_confidence_score,
     get_followup,
     get_estimate
 )
 from .lib.estimate.recipes import get_nutrition_from_url
+from .lib.db.mongodb import entries_collection
+
 
 if _: # see /lib/setup.py, this is just to fix a linting warning
     pass
@@ -63,3 +72,16 @@ async def recipe(formdata: RecipeFormData) -> EstimateResponse:
         })
     except WebsiteNotImplementedError:
         raise HTTPException(400, f'Website not supported: {url}')
+    
+    
+# ~~~ MongoDB CRUD routes
+
+@app.post('/entries/', response_model=EntryModel)
+async def create_entry(entry: EntryModel = Body(...)):
+    new_entry = await entries_collection.insert_one(
+        entry.model_dump(by_alias=True, exclude=['id'])
+    )
+    created_entry = await entries_collection.find_one(
+        {'_id': new_entry.inserted_id}
+    )
+    return created_entry
