@@ -1,8 +1,8 @@
-from pydantic import BaseModel, NonNegativeInt, field_validator, AnyUrl, PositiveFloat, Field, ConfigDict
+from pydantic import BaseModel, NonNegativeInt, field_validator, PositiveFloat, Field, ConfigDict, AnyUrl
 from pydantic.functional_validators import BeforeValidator
 from typing import Literal, Union, Optional
 from typing_extensions import Annotated
-from datetime import date
+from datetime import date, datetime
 from bson import ObjectId
 
 
@@ -43,13 +43,20 @@ class EstimateFormData(BaseModel):
     followup_response: str | None = None
     
 class RecipeFormData(BaseModel):
-    recipe_url: AnyUrl
+    recipe_url: str
+    
+    @field_validator('recipe_url')
+    @classmethod
+    def validate_url(cls, url: str):
+        if not url.startswith('https://'):
+            url = 'https://' + url
+        AnyUrl(url) # raises ValueError if fails
+        return url
     
 class EstimateResponse(BaseModel):
     response_type: Literal['followup', 'estimateFromDescription', 'estimateFromRecipe']
     data: Union[EstimateFormData, RecipeFormData]
     estimate: NutritionBreakdown | None = None
-
     
 # ~~~ MongoDB models
 
@@ -57,8 +64,8 @@ PyObjectId = Annotated[str, BeforeValidator(str)]
 
 class EntryModel(BaseModel):
     id: Optional[PyObjectId] = Field(alias='_id', default=None)
-    # data: Union[EstimateFormData, RecipeFormData] # original data that the estimate was generated from
-    # estimate: NutritionBreakdown
+    data: Union[EstimateFormData, RecipeFormData] # original data that the estimate was generated from
+    estimate: NutritionBreakdown
     servings: PositiveFloat
     entry_date: str = date.today().strftime('%m/%d/%Y')
     
@@ -71,12 +78,18 @@ class UpdateEntryModel(BaseModel):
     data: Optional[Union[EstimateFormData, RecipeFormData]] = None
     estimate: Optional[NutritionBreakdown] = None
     servings: Optional[PositiveFloat] = None
-    entry_date: Optional[date] = None
+    entry_date: Optional[str] = None
     
     model_config = ConfigDict(
         arbitrary_types_allowed=True,
         json_encoders={ObjectId: str}
     )
+    
+    @field_validator('entry_date')
+    @classmethod
+    def validate_entry_date(cls, entry_date):
+        datetime.strptime(entry_date, '%m/%d/%Y') # raises ValueError if invalid
+        return entry_date
     
 class EntryCollection(BaseModel):
     entries: list[EntryModel]
