@@ -45,3 +45,11 @@ export async function submitRecipeURL(payload: any) {
     })
     return await res.json()
 }
+
+
+// ~~~ MongoDB CRUD
+
+export async function readAllEntries() {
+    const res = await fetch(`${apiBaseUrl}/entries`)
+    return await res.json()
+}

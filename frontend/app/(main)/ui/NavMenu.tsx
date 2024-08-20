@@ -32,6 +32,12 @@ export default function NavMenu() {
                         <Link href="/" className="hover:text-green-700">
                             calculator
                         </Link>
+                        {user && (
+                            <Link href="/log" className="hover:text-green-700">
+                                my log
+                            </Link>
+                        )}
+                        
                     </div>
                     {user ? (
                         <UserButton />
@@ -67,6 +73,11 @@ export default function NavMenu() {
                                         calculator
                                     </Link>
                                 </SheetTrigger>
+                                {user && (
+                                    <Link href="/log" className="hover:text-green-700">
+                                        my log
+                                    </Link>
+                                )}
                                 <Separator />
                                 <SheetTrigger asChild>
                                     <Link href="/handler/account-settings" className="hover:text-green-700">
