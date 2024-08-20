@@ -21,7 +21,7 @@ export async function submitMealDescription(payload: any) {
         followup: payload.get('followup'),
         followup_response: payload.get('followup_response')
     }
-    const res = await fetch(`${apiBaseUrl}/estimate`, {
+    const res = await fetch(`${apiBaseUrl}/calculator/from-description`, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -37,7 +37,7 @@ export async function submitRecipeURL(payload: any) {
     const data = {
         recipe_url: payload.get('description').trim()
     }
-    const res = await fetch(`${apiBaseUrl}/recipe`, {
+    const res = await fetch(`${apiBaseUrl}/calculator/from-recipe`, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -63,9 +63,6 @@ function hashUserId(userId: string): string {
 // ~~~ MongoDB CRUD
 
 export async function readAllEntries(userId: string) {
-    console.log(userId)
-    console.log(hashUserId(userId))
-    console.log()
     const res = await fetch(`${apiBaseUrl}/entries`, {
         method: 'GET',
         headers: {
