@@ -36,8 +36,10 @@ estimate_prompt = """
 
     Try to make a reasonable estimate of the nutrition facts from this description that is within plus-minus 50 calories of the actual value.
 
-    Respond with a estimate of min-max range pairs for each field in {nutrient_fields} as JSON:
+    Respond with a meal title and estimate of min-max range pairs for each field in {nutrient_fields} as JSON:
     {{
+        title: <string>,
+        nutrition_breakdown: {{
         <field>: {{
             min: <number>, 
             max: <number>, 
@@ -46,8 +48,8 @@ estimate_prompt = """
     }}. Only return the JSON string.
     
     Examples:
-    Input 1: \"a tofu salad\"
-    Output 1: {{\"calories\": [400, 450, \"cal\"], \"carbs\": [10, 15, \"g\"]}}
+    Input 1: \"a tofu salad, carrots, a glass of wine\"
+    Output 1: {{\"title\": \"tofu salad, carrots, and wine\", \"nutrition_breakdown\": {{\"calories\": [400, 450, \"cal\"], \"carbs\": [10, 15, \"g\"]}}}}
 """
 
 followup_info_prompt = """

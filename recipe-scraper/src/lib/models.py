@@ -35,6 +35,10 @@ class NutritionBreakdown(BaseModel):
                 data[k].min *= servings
                 data[k].max *= servings
         return cls(**data)
+    
+class MealModel(BaseModel):
+    title: str
+    nutrition_breakdown: NutritionBreakdown
 
 class EstimateFormData(BaseModel):
     description: str | None # not optional?
@@ -56,7 +60,7 @@ class RecipeFormData(BaseModel):
 class EstimateResponse(BaseModel):
     response_type: Literal['followup', 'estimateFromDescription', 'estimateFromRecipe']
     data: Union[EstimateFormData, RecipeFormData]
-    estimate: NutritionBreakdown | None = None
+    estimate: MealModel | None = None
     
     
     
@@ -68,7 +72,7 @@ class EntryModel(BaseModel):
     id: Optional[PyObjectId] = Field(alias='_id', default=None)
     author_id: str
     data: Union[EstimateFormData, RecipeFormData] # original data that the estimate was generated from
-    estimate: NutritionBreakdown
+    estimate: MealModel
     servings: PositiveFloat
     entry_date: str = date.today().strftime('%m-%d-%Y')
     
@@ -79,7 +83,7 @@ class EntryModel(BaseModel):
     
 class UpdateEntryModel(BaseModel):
     data: Optional[Union[EstimateFormData, RecipeFormData]] = None
-    estimate: Optional[NutritionBreakdown] = None
+    estimate: Optional[MealModel] = None
     servings: Optional[PositiveFloat] = None
     entry_date: Optional[str] = None
     

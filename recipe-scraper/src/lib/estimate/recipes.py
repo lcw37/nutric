@@ -1,13 +1,13 @@
 from recipe_scrapers import scrape_html
 import requests
 import re
-from ..models import NutritionBreakdown
+from ..models import MealModel, NutritionBreakdown
 
 
 def get_nutrition_from_url(
     url: str, 
     nutrient_fields: list[str] | None = None, 
-) -> NutritionBreakdown:
+) -> MealModel:
     html = requests.get(url).content
     scraper = scrape_html(html, org_url=url, supported_only=True)
     nutrients = scraper.nutrients()
@@ -29,7 +29,10 @@ def get_nutrition_from_url(
             k = 'carbs'
             
         parsed_nutrients[k] = {'min': amount, 'max': amount,'unit': unit}
-    return NutritionBreakdown(**parsed_nutrients)
+    return MealModel(
+        title=scraper.title().lower(),
+        nutrition_breakdown=NutritionBreakdown(**parsed_nutrients)
+    )
 
 
 def parse_macro(text: str) -> list[float, str] | str | None:

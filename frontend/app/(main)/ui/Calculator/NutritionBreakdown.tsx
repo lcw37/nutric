@@ -14,6 +14,8 @@ export default function NutritionBreakdownCard({
     data: any,
     estimate: any,
 }) {
+    const { title, nutrition_breakdown: nutritionBreakdown } = estimate
+
     const [servings, setServings] = useState('1.0') // set as string so trailing decimal points can work
     function handleServingsChange(e: any) {
         let newServings = e.target.value
@@ -23,22 +25,22 @@ export default function NutritionBreakdownCard({
     return (
         <Card>
             <CardHeader>
-                <CardTitle>nutrition breakdown</CardTitle>
+                <CardTitle>{title}</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4">
                 <Label>servings</Label>
                 <Input value={servings} onChange={handleServingsChange} />
-                {Object.keys(estimate).map((k) => (
+                {Object.keys(nutritionBreakdown).map((k) => (
                     <div className="flex items-center justify-between" key={k}>
                         <span>{k}</span>
                         {(estimateType === 'fromDescription') && (
                             <span className="font-medium">
-                                {+(Number(servings) * estimate[k].min).toFixed(1)}-{+(Number(servings) * estimate[k].max).toFixed(1)} {estimate[k].unit}
+                                {+(Number(servings) * nutritionBreakdown[k].min).toFixed(1)}-{+(Number(servings) * nutritionBreakdown[k].max).toFixed(1)} {nutritionBreakdown[k].unit}
                             </span>
                         )}
                         {(estimateType === 'fromRecipe') && (
                             <span className="font-medium">
-                                {+(Number(servings) * estimate[k].min).toFixed(1)} {estimate[k].unit}
+                                {+(Number(servings) * nutritionBreakdown[k].min).toFixed(1)} {nutritionBreakdown[k].unit}
                             </span>
                         )}
                     </div>

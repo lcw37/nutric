@@ -87,7 +87,12 @@ function EntryCard({
 }: {
     entry: any,
 }) {
-    const { estimate, servings } = entry
+    const { 
+        estimate: {
+            title, 
+            nutrition_breakdown: nutritionBreakdown
+        }, servings 
+    } = entry
     // const [servings, setServings] = useState(entry.servings) // set as string so trailing decimal points can work
     // function handleServingsChange(e: any) {
     //     let newServings = e.target.value
@@ -100,7 +105,7 @@ function EntryCard({
     return (
         <Card>
             <CardHeader>
-                <CardTitle>nutrition breakdown</CardTitle>
+                <CardTitle>{title}</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4">
                 {/* <Label>servings</Label> */}
@@ -109,17 +114,17 @@ function EntryCard({
                     <span>servings</span>
                     <span className="font-medium">{servings}</span>
                 </div>
-                {Object.keys(estimate).map((k) => (
+                {Object.keys(nutritionBreakdown).map((k) => (
                     <div className="flex items-center justify-between" key={k}>
                         <span>{k}</span>
                         {('description' in entry.data) && (
                             <span className="font-medium">
-                                {+(Number(servings) * estimate[k].min).toFixed(1)}-{+(Number(servings) * estimate[k].max).toFixed(1)} {estimate[k].unit}
+                                {+(Number(servings) * nutritionBreakdown[k].min).toFixed(1)}-{+(Number(servings) * nutritionBreakdown[k].max).toFixed(1)} {nutritionBreakdown[k].unit}
                             </span>
                         )}
                         {('recipe_url' in entry.data) && (
                             <span className="font-medium">
-                                {+(Number(servings) * estimate[k].min).toFixed(1)} {estimate[k].unit}
+                                {+(Number(servings) * nutritionBreakdown[k].min).toFixed(1)} {nutritionBreakdown[k].unit}
                             </span>
                         )}
                     </div>
@@ -148,26 +153,26 @@ function EntryCard({
     )
 }
 
-function UpdateEntryButton({
-    entry,
-    newServings
-}: {
-    entry: any,
-    newServings: string
-}) {
-    return (
-        <Button
-            onClick={async () => {
-                await updateEntry(
-                    entry.id, {
-                    author_id: entry.author_id,
-                    data: entry.data,
-                    estimate: entry.estimate,
-                    servings: newServings
-                })
-            }}
-        >
-                add to my log
-        </Button>
-)
-}
+// function UpdateEntryButton({
+//     entry,
+//     newServings
+// }: {
+//     entry: any,
+//     newServings: string
+// }) {
+//     return (
+//         <Button
+//             onClick={async () => {
+//                 await updateEntry(
+//                     entry.id, {
+//                     author_id: entry.author_id,
+//                     data: entry.data,
+//                     estimate: entry.estimate,
+//                     servings: newServings
+//                 })
+//             }}
+//         >
+//                 add to my log
+//         </Button>
+// )
+// }

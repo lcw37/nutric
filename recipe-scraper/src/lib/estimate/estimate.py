@@ -2,7 +2,7 @@ from . import prompts
 import os
 from openai import OpenAI
 import json
-from ..models import NutritionBreakdown, EstimateFormData
+from ..models import MealModel, NutritionBreakdown, EstimateFormData
 from pydantic import ValidationError
 
 
@@ -44,7 +44,7 @@ def get_followup(description: str) -> str:
         raise Exception('Failed to get followup.')
 
 
-def get_estimate(formdata: EstimateFormData) -> NutritionBreakdown:
+def get_estimate(formdata: EstimateFormData) -> MealModel:
     description = formdata.description
     nutrient_fields = formdata.nutrient_fields
     followup = formdata.followup
@@ -64,8 +64,13 @@ def get_estimate(formdata: EstimateFormData) -> NutritionBreakdown:
     try:
         r = response(p)
         r = json.loads(r)
-        estimate = NutritionBreakdown(**r)
-        return estimate
+        print(r)
+        title = r['title']
+        estimate = NutritionBreakdown(**r['nutrition_breakdown'])
+        return MealModel(
+            title=title,
+            nutrition_breakdown=estimate
+        )
     except ValidationError as e:
         raise Exception(f'Estimate returned in invalid format.\n{e.errors()}')
     except Exception:
