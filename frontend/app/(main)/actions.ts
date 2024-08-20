@@ -62,6 +62,21 @@ function hashUserId(userId: string): string {
 
 // ~~~ MongoDB CRUD
 
+export async function createEntry(payload: any) {
+    const userId = payload.author_id
+    const res = await fetch(`${apiBaseUrl}/entries`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-UserId': userId,
+            'X-HashedUserId': hashUserId(userId)
+        },
+        body: JSON.stringify(payload)
+    })
+    return await res.json()
+}
+
+
 export async function readAllEntries(userId: string) {
     const res = await fetch(`${apiBaseUrl}/entries`, {
         method: 'GET',

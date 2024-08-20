@@ -58,7 +58,6 @@ export default function InputForm() {
         const res = await submitMealDescription(payload)
         return res
     }
-
     return (
         <div className="w-full max-w-md mx-auto space-y-8 py-0">
             <div className="text-left grid gap-4">
@@ -118,11 +117,19 @@ export default function InputForm() {
 
             {/* View nutrition breakdown */}
             {state.response_type === 'estimateFromDescription' && (
-                <NutritionBreakdownCard estimate={state.estimate} type="fromDescription" />
+                <NutritionBreakdownCard 
+                    type="fromDescription" 
+                    data={state.data}
+                    estimate={state.estimate}
+                />
             )}
 
             {state.response_type === 'estimateFromRecipe' && (
-                <NutritionBreakdownCard estimate={state.estimate} type="fromRecipe"/>
+                <NutritionBreakdownCard 
+                    type="fromRecipe" 
+                    data={state.data}
+                    estimate={state.estimate}
+                />
             )}
         </div>
     )

@@ -5,14 +5,15 @@ import { Label } from "@/components/ui/label"
 import { AddToLogButton } from "./Buttons"
 
 
-export default function NutritionBreakdownCard(
-    { 
-        estimate, 
-        type 
-    }: { 
-        estimate: any, 
-        type: 'fromDescription' | 'fromRecipe' 
-    }) {
+export default function NutritionBreakdownCard({ 
+    type,
+    data,
+    estimate
+}: { 
+    type: 'fromDescription' | 'fromRecipe',
+    data: any,
+    estimate: any
+}) {
     const [servings, setServings] = useState('1.0') // set as string so trailing decimal points can work
     function handleServingsChange(e: any) {
         let newServings = e.target.value
@@ -42,7 +43,11 @@ export default function NutritionBreakdownCard(
                         )}
                     </div>
                 ))}
-                <AddToLogButton />
+                <AddToLogButton 
+                    data={data}
+                    estimate={estimate}
+                    servings={Number(servings)}
+                />
             </CardContent>
         </Card>
     )

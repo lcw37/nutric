@@ -4,13 +4,31 @@ import { Button } from "@/components/ui/button";
 import { useUser } from "@stackframe/stack";
 import Link from "next/link";
 import { useFormStatus } from "react-dom";
+import { createEntry } from "../../actions";
 
 
-export function AddToLogButton() {
-    const currentUser = useUser()
-    if (currentUser) {
+export function AddToLogButton({
+    data,
+    estimate,
+    servings
+}: {
+    data: any,
+    estimate: any,
+    servings: number
+}) {
+    const user = useUser()
+    if (user) {
         return (
-            <Button>
+            <Button
+                onClick={() => {
+                    createEntry({
+                        author_id: user.id,
+                        data: data,
+                        estimate: estimate,
+                        servings: servings
+                    })
+                }}
+            >
                     add to my log
             </Button>
         )
