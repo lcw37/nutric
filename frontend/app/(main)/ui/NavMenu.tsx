@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
-import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
+import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button";
 import { useUser, UserButton } from "@stackframe/stack";
 import { Separator } from "@/components/ui/separator";
@@ -65,6 +65,11 @@ export default function NavMenu() {
                     <Logo />
                 </div>
                 <SheetContent side="left" className="md:hidden">
+                    <SheetHeader>
+                        {/* title/description required for accessibility reasons */}
+                        <SheetTitle></SheetTitle>
+                        <SheetDescription></SheetDescription>
+                    </SheetHeader>
                     <nav className="grid gap-2 w-[300px] p-4">
                         {user ? (
                             <>
@@ -74,9 +79,11 @@ export default function NavMenu() {
                                     </Link>
                                 </SheetTrigger>
                                 {user && (
-                                    <Link href="/log" className="hover:text-green-700">
-                                        my log
-                                    </Link>
+                                    <SheetTrigger asChild>
+                                        <Link href="/log" className="hover:text-green-700">
+                                            my log
+                                        </Link>
+                                    </SheetTrigger>
                                 )}
                                 <Separator />
                                 <SheetTrigger asChild>
