@@ -58,12 +58,15 @@ class EstimateResponse(BaseModel):
     data: Union[EstimateFormData, RecipeFormData]
     estimate: NutritionBreakdown | None = None
     
+    
+    
 # ~~~ MongoDB models
 
 PyObjectId = Annotated[str, BeforeValidator(str)]
 
 class EntryModel(BaseModel):
     id: Optional[PyObjectId] = Field(alias='_id', default=None)
+    author_id: str
     data: Union[EstimateFormData, RecipeFormData] # original data that the estimate was generated from
     estimate: NutritionBreakdown
     servings: PositiveFloat

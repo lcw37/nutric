@@ -5,7 +5,8 @@ from fastapi import (
     FastAPI, 
     HTTPException,
     Body,
-    Response
+    Response,
+    Request
 )
 
 from .lib.models import (
@@ -26,6 +27,9 @@ from .lib.db.mongodb import entries_collection
 
 from bson import ObjectId
 from pymongo import ReturnDocument
+
+import hashlib
+import os
 
 
 if _: # see /lib/setup.py, this is just to fix a linting warning
@@ -79,6 +83,37 @@ async def recipe(formdata: RecipeFormData = Body(...)) -> EstimateResponse:
         raise HTTPException(400, f'Website not supported: {url}')
     
     
+    
+# ~~~ MongoDB "auth" middleware (because auth is already done on the NextJS frontend using Stack Auth)
+
+secret = os.environ['BACKEND_AUTH_SECRET']
+
+def verify(user_id: str, hashed_user_id):
+    print(user_id)
+    print(hashlib.sha256((user_id + secret).encode('utf-8')).hexdigest())
+    print()
+    return hashlib.sha256((user_id + secret).encode('utf-8')).hexdigest() == hashed_user_id
+
+@app.middleware('http')
+async def check_auth(req: Request, call_next):
+    # skip over the /estimate and /recipe routes
+    if req.url.path == '/recipe' or req.url.path == '/estimate':
+        print('skipped middleware')
+        res = await call_next(req)
+        return res
+    print('running middleware')
+    user_id = req.headers.get('X-UserId')
+    hashed_user_id = req.headers.get('X-HashedUserId')
+    if user_id and hashed_user_id:
+        if verify(user_id, hashed_user_id):
+            res = await call_next(req)
+            return res
+    else:
+        raise HTTPException(status_code=400, detail='failed backend auth')
+        
+        
+    
+    
 # ~~~ MongoDB CRUD routes
 
 @app.post('/entries/', response_model=EntryModel, response_model_by_alias=False)
@@ -93,8 +128,9 @@ async def create_entry(entry: EntryModel = Body(...)):
 
 
 @app.get('/entries/', response_model=EntryCollection, response_model_by_alias=False)
-async def list_entries():
-    entries = await entries_collection.find().to_list(length=100) # max length to return, TODO: add skip/limit pagination
+async def list_entries(req: Request):
+    user_id = req.headers.get('X-UserId')
+    entries = await entries_collection.find({'author_id': user_id}).to_list(length=100) # max length to return, TODO: add skip/limit pagination
     return EntryCollection(entries=entries)
 
 

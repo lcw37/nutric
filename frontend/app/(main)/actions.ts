@@ -1,6 +1,8 @@
 'use server'
 
 
+import { createHash } from "crypto"
+
 const apiBaseUrl = process.env.BACKEND_API_URL || 'http://localhost:8000'
 console.log(`frontend connected to: ${apiBaseUrl}`)
 
@@ -47,9 +49,29 @@ export async function submitRecipeURL(payload: any) {
 }
 
 
+// ~~~ MongoDB "auth"
+
+const secret = process.env.BACKEND_AUTH_SECRET
+
+function hashUserId(userId: string): string {
+    const data = Buffer.from(userId + secret)
+    const hash = createHash('sha256')
+    hash.update(data)
+    return hash.digest('hex')
+}
+
 // ~~~ MongoDB CRUD
 
-export async function readAllEntries() {
-    const res = await fetch(`${apiBaseUrl}/entries`)
+export async function readAllEntries(userId: string) {
+    console.log(userId)
+    console.log(hashUserId(userId))
+    console.log()
+    const res = await fetch(`${apiBaseUrl}/entries`, {
+        method: 'GET',
+        headers: {
+            'X-UserId': userId,
+            'X-HashedUserId': hashUserId(userId)
+        }
+    })
     return await res.json()
 }
