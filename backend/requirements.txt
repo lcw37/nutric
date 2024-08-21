@@ -28,12 +28,14 @@ markdown-it-py==3.0.0
 MarkupSafe==2.1.5
 mdurl==0.1.2
 mf2py==2.0.1
+motor==3.5.1
 openai==1.40.6
 packaging==24.1
 pluggy==1.5.0
 pydantic==2.8.2
 pydantic_core==2.20.1
 Pygments==2.18.0
+pymongo==4.8.0
 pyparsing==3.1.2
 pyRdfa3==3.6.4
 pytest==8.3.2
@@ -41,7 +43,7 @@ python-dotenv==1.0.1
 python-multipart==0.0.9
 PyYAML==6.0.2
 rdflib==7.0.0
-# -e git+https://github.com/lcw37/nutrition-nlp.git@c130fafab1cfbb6f21370cc346350dd765a05323#egg=recipe_scraper&subdirectory=recipe-scraper
+-e git+https://github.com/lcw37/nutrition-nlp.git@10147cdf0920b46897f5f6a89ee905b4451e7a3e#egg=recipe_scraper&subdirectory=recipe-scraper
 recipe_scrapers==15.0.0
 requests==2.32.3
 rich==13.7.1

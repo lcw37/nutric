@@ -21,7 +21,7 @@ import { format } from "date-fns"
 import { deleteEntry, readAllEntries, updateEntry } from '../actions';
 import Link from 'next/link';
 
-
+import { Skeleton } from "@/components/ui/skeleton"
 
 
 interface Entry {
@@ -48,16 +48,18 @@ export default function Log() {
     const initState: Entry[] = []
     const [entries, setEntries] = useState(initState);
 
+    const [loading, setLoading] = useState(false)
+
 
     useEffect(() => {
-        if (date) {
-            const formattedEntryDate = format(date, 'MM-dd-yyyy')
-            const fetchData = async () => {
-                const fetchedEntries: Entry[] = (await readAllEntries(user.id, {entry_date: formattedEntryDate})).entries
-                setEntries(fetchedEntries);
-            };
-            fetchData();
-        }
+        setLoading(true)
+        const formattedEntryDate = format(date, 'MM-dd-yyyy')
+        const fetchData = async () => {
+            const fetchedEntries: Entry[] = (await readAllEntries(user.id, {entry_date: formattedEntryDate})).entries
+            setEntries(fetchedEntries);
+            setLoading(false);
+        };
+        fetchData();
     }, [date]); // Re-fetch when date changes
     return (
         <div className="w-full max-w-md mx-auto space-y-8 py-0">
@@ -83,7 +85,12 @@ export default function Log() {
                     />
                 </PopoverContent>
             </Popover>
-            {entries.length > 0 ? (
+            {loading ? (
+                <>
+                    <Skeleton className="h-[240px] rounded-xl" />
+                    <Skeleton className="h-[300px] rounded-xl" />
+                </>
+            ) : entries.length > 0 ? (
                 <>
                     <TotalCard entries={entries}/>
                     {entries.map((entry: Entry, index: number) => (
@@ -140,7 +147,7 @@ function TotalCard({
         sumEntries(entries)
     }, [])
     return (
-        <Card>
+        <Card className="bg-emerald-50 border-none">
             <CardHeader>
                 <CardTitle>totals</CardTitle>
             </CardHeader>
