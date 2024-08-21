@@ -28,9 +28,18 @@ interface Entry {
     id: string
     author_id: string
     data: any
-    estimate: any,
+    estimate: {
+        title: string;
+        nutrition_breakdown: NutritionBreakdown
+    },
     servings: string,
     entry_date: string
+}
+interface NutritionBreakdown {
+    calories: { min: number; max: number; unit: string };
+    carbs: { min: number; max: number; unit: string };
+    fat: { min: number; max: number; unit: string };
+    protein: { min: number; max: number; unit: string };
 }
 
 export default function Log() {
@@ -74,13 +83,81 @@ export default function Log() {
                     />
                 </PopoverContent>
             </Popover>
-                {entries.map((entry: Entry, index: number) => (
-                    <EntryCard key={index.toString() + date} entry={entry} />
-                ))
-            }
+            {entries.length > 0 ? (
+                <>
+                    <TotalCard entries={entries}/>
+                    {entries.map((entry: Entry, index: number) => (
+                        <EntryCard key={index.toString() + date} entry={entry} />
+                    ))}
+                </>
+            ) : (
+                <p>No entries found</p>
+            )}
         </div>
     )
 }
+
+
+function TotalCard({
+    entries
+}: {
+    entries: Entry[]
+}) {
+    const [totals, setTotals] = useState<NutritionBreakdown>({
+        calories: { min: 0, max: 0, unit: 'cal' },
+        carbs: { min: 0, max: 0, unit: 'g' },
+        fat: { min: 0, max: 0, unit: 'g' },
+        protein: { min: 0, max: 0, unit: 'g' }
+    })
+    useEffect(() => {
+        function sumEntries(entries: Entry[]) {
+            const totals: NutritionBreakdown = {
+                calories: { min: 0, max: 0, unit: 'cal' },
+                carbs: { min: 0, max: 0, unit: 'g' },
+                fat: { min: 0, max: 0, unit: 'g' },
+                protein: { min: 0, max: 0, unit: 'g' }
+            }
+            entries.forEach((entry) => {
+                const { 
+                    servings, 
+                    estimate: {
+                        nutrition_breakdown: {
+                            calories, carbs, fat, protein
+                        }
+                    }
+                } = entry
+                totals.calories.min += calories.min * Number(servings)
+                totals.calories.max += calories.max * Number(servings)
+                totals.carbs.min += carbs.min * Number(servings)
+                totals.carbs.max += carbs.max * Number(servings)
+                totals.fat.min += fat.min * Number(servings)
+                totals.fat.max += fat.max * Number(servings)
+                totals.protein.min += protein.min * Number(servings)
+                totals.protein.max += protein.max * Number(servings)
+            })
+            setTotals(totals)
+        }
+        sumEntries(entries)
+    }, [])
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>totals</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+                {Object.keys(totals).length > 0 && (Object.keys(totals).map((k) => (
+                    <div className="flex items-center justify-between" key={k}>
+                        <span>{k}</span>
+                        <span className="font-medium">
+                            {+(totals[k].min).toFixed(1)}-{+(totals[k].max).toFixed(1)} {totals[k].unit}
+                        </span>
+                    </div>
+                )))}
+            </CardContent>
+        </Card>
+    )
+}
+
 
 function EntryCard({
     entry
@@ -152,27 +229,3 @@ function EntryCard({
         </Card>
     )
 }
-
-// function UpdateEntryButton({
-//     entry,
-//     newServings
-// }: {
-//     entry: any,
-//     newServings: string
-// }) {
-//     return (
-//         <Button
-//             onClick={async () => {
-//                 await updateEntry(
-//                     entry.id, {
-//                     author_id: entry.author_id,
-//                     data: entry.data,
-//                     estimate: entry.estimate,
-//                     servings: newServings
-//                 })
-//             }}
-//         >
-//                 add to my log
-//         </Button>
-// )
-// }
