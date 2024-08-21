@@ -1,5 +1,19 @@
-conda env           nutrition-nlp-env
-run dev server      fastapi run src/main.py
-testing             pytest -rP (make sure only nutrition-nlp-env is active)
+# nutric frontend
 
-recipe-scrapers     https://github.com/hhursev/recipe-scrapers/blob/main/docs/how-to-develop-scraper.md
+NextJS / TypeScript / TailwindCSS / shadcn frontend for nutric. [Stack Auth](https://stack-auth.com/) for authentication.
+
+## Installation
+
+```
+npm install
+```
+
+## Usage
+
+```
+npm run dev
+```
+or
+```
+npm run start
+```
