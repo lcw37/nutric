@@ -104,7 +104,7 @@ export default function NavMenu() {
                                         sign up
                                     </Link>
                                 </SheetTrigger>
-                                    <Separator />
+                                    <Separator className="w-20"/>
                                 <SheetTrigger asChild>
                                     <Link href="/" className="hover:text-green-700">
                                         calculator
