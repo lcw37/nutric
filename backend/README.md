@@ -1,19 +1,15 @@
-# nutric frontend
+# nutric backend
 
-NextJS / TypeScript / TailwindCSS / shadcn frontend for nutric. [Stack Auth](https://stack-auth.com/) for authentication.
+Python / FastAPI backend for nutric. Generates nutrition estimates using [recipe-scrapers](https://github.com/hhursev/recipe-scrapers/blob/main/docs/how-to-develop-scraper.md) and OpenAI API. Connects to MongoDB NoSQL database. 
 
 ## Installation
 
 ```
-npm install
+pip install -r requirements.txt
 ```
 
 ## Usage
 
 ```
-npm run dev
-```
-or
-```
-npm run start
+fastapi run src/main.py
 ```
