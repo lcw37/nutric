@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "recipe-scraper"
+name = "backend"
 version = "0.1.0"
 description = ""
 authors = ["Lu Wang <luwang.wang@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.11"
 recipe-scrapers = "^15.0.0"
 fastapi = {extras = ["standard"], version = "^0.112.0"}
 openai = "^1.40.6"
