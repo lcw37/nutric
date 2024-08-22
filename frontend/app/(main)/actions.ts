@@ -1,12 +1,14 @@
 'use server'
 
 
-import { DescriptionFormData, EstimateResponse, RecipeFormData } from "@/lib/types"
+import { DescriptionFormData, Entry, EstimateResponse, RecipeFormData } from "@/lib/types"
 import { createHash } from "crypto"
 import { revalidatePath } from "next/cache"
 
+
 const apiBaseUrl = process.env.BACKEND_API_URL || 'http://localhost:8000'
 console.log(`frontend connected to: ${apiBaseUrl}`)
+
 
 export async function pingBackend() {
     const res = await fetch(`${apiBaseUrl}/ping`)
@@ -15,9 +17,8 @@ export async function pingBackend() {
     return pong
 }
 
-// export async function submitMealDescription(formData: FormData) {
+
 export async function submitMealDescription(payload: DescriptionFormData): Promise<EstimateResponse> {
-    // extract payload FormData to object
     const res = await fetch(`${apiBaseUrl}/calculator/from-description`, {
         method: 'POST',
         headers: {
@@ -54,9 +55,10 @@ function hashUserId(userId: string): string {
     return hash.digest('hex')
 }
 
+
 // ~~~ MongoDB CRUD
 
-export async function createEntry(payload: any) {
+export async function createEntry(payload: Entry) {
     const userId = payload.author_id
     const res = await fetch(`${apiBaseUrl}/entries`, {
         method: 'POST',
@@ -72,7 +74,6 @@ export async function createEntry(payload: any) {
 }
 
 
-
 export async function readAllEntries(
     userId: string,
     options: {
@@ -81,14 +82,15 @@ export async function readAllEntries(
         offset?: number
     }
 ) {
-    const { entry_date, limit=20, offset=0 } = options
+    const { entry_date, limit = 20, offset = 0 } = options
     const queryParams = new URLSearchParams()
-    if (entry_date) {queryParams.append('entry_date', entry_date)}
+    if (entry_date) {
+        queryParams.append('entry_date', entry_date)
+    }
     queryParams.append('limit', limit.toString())
     queryParams.append('offset', offset.toString())
 
     const url = `${apiBaseUrl}/entries?${queryParams.toString()}`
-    console.log(url)
     const res = await fetch(url, {
         method: 'GET',
         headers: {
@@ -98,6 +100,7 @@ export async function readAllEntries(
     })
     return await res.json()
 }
+
 
 export async function updateEntry(
     entryId: string,

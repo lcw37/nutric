@@ -20,6 +20,7 @@ function Logo() {
     )
 }
 
+
 export default function NavMenu() {
     const user = useUser()
     return (
@@ -72,6 +73,7 @@ export default function NavMenu() {
                     </SheetHeader>
                     <nav className="grid gap-2 w-[300px] p-4">
                         {user ? (
+                            // if logged in: 
                             <>
                                 <SheetTrigger asChild>
                                     <Link href="/" className="hover:text-green-700">
@@ -93,6 +95,7 @@ export default function NavMenu() {
                                 </SheetTrigger>
                             </>
                         ) : (
+                            // if not logged in:
                             <>
                                 <SheetTrigger asChild>
                                     <Link href="/handler/sign-in" className="hover:text-green-700">

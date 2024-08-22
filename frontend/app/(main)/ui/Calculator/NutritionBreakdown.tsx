@@ -45,9 +45,8 @@ export default function NutritionBreakdownCard({
                     </div>
                 ))}
                 <AddToLogButton 
-                    data={data}
-                    estimate={estimate}
-                    servings={Number(servings)}
+                    estimateResponse={estimateResponse}
+                    servings={servings}
                 />
             </CardContent>
         </Card>

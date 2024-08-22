@@ -84,11 +84,15 @@ export function EntryCard({
     entry: Entry,
 }) {
     const { 
+        id,
+        author_id,
         estimate: {
             title, 
             nutrition_breakdown: nutritionBreakdown
-        }, servings 
+        }, 
+        servings 
     } = entry
+    if (!id) return (<></>)
     // const [servings, setServings] = useState(entry.servings) // set as string so trailing decimal points can work
     // function handleServingsChange(e: any) {
     //     let newServings = e.target.value
@@ -136,8 +140,8 @@ export function EntryCard({
                         className="flex-1 p-0"
                         onClick={async () => {
                             await deleteEntry(
-                                entry.id, {
-                                author_id: entry.author_id,
+                                id, {
+                                author_id: author_id,
                             })
                         }}
                     >

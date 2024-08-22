@@ -36,7 +36,7 @@ type EstimateResponse = {
 };
 
 interface Entry {
-    id: string
+    id?: string
     author_id: string
     data: any
     estimate: {
@@ -44,9 +44,8 @@ interface Entry {
         nutrition_breakdown: NutritionBreakdown
     },
     servings: string,
-    entry_date: string
+    entry_date?: string
 }
-
 
 
 export type {

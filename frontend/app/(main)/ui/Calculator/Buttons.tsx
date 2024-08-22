@@ -1,21 +1,25 @@
 'use client'
 
+
 import { Button } from "@/components/ui/button";
 import { useUser } from "@stackframe/stack";
 import Link from "next/link";
 import { useFormStatus } from "react-dom";
 import { createEntry } from "../../actions";
 
+import { EstimateResponse } from "@/lib/types";
+
 
 export function AddToLogButton({
-    data,
-    estimate,
+    estimateResponse,
     servings
 }: {
-    data: any,
-    estimate: any,
-    servings: number
+    estimateResponse: EstimateResponse,
+    servings: string
 }) {
+    const { data, estimate } = estimateResponse
+    if (!data || !estimate) { return <></> }
+
     const user = useUser()
     if (user) {
         return (

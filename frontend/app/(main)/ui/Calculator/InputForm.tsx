@@ -7,12 +7,12 @@ import { useFormState } from "react-dom"
 import { Card, CardHeader, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button"
 import NutritionBreakdownCard from "./NutritionBreakdown"
 import { SubmitButton } from "./Buttons"
 
 import { submitMealDescription, submitRecipeURL } from "../../actions"
 import isUrl from 'is-url-superb'
-import { Button } from "@/components/ui/button"
 
 import { DescriptionFormData, EstimateResponse, RecipeFormData } from "@/lib/types"
 
@@ -37,6 +37,21 @@ export default function InputForm() {
             followupTextAreaRef.current.value = text 
         }
     }
+
+    // choose random description or recipe URL
+    function getRandomExample(choices: string[]) {
+        return choices[Math.floor(Math.random() * choices.length)];
+    }
+    const descriptionChoices = [
+        'baked eggplant parm, baked carrots, and a slice of whole wheat bread',
+        'tofu salad with ginger dressing and croutons, a side of fries',
+        'grilled salmon with lemon, rice, and sauteed spinach'
+    ]
+    const recipeChoices = [
+        'https://cafedelites.com/authentic-chimichurri-uruguay-argentina/',
+        'https://www.allrecipes.com/recipe/158968/spinach-and-feta-turkey-burgers/',
+        'https://www.allrecipes.com/recipe/15184/mouth-watering-stuffed-mushrooms/'
+    ]
         
     async function handleFormSubmit(prevState: EstimateResponse, payload: FormData): Promise<EstimateResponse> {
         let res: EstimateResponse = {
@@ -60,16 +75,15 @@ export default function InputForm() {
             }
             // if there was a previous state and that state was a DescriptionFormData:
             if (prevState.data && 'description' in prevState.data) {
-                // if the description was changed:
+                // if the description was changed, reset description and re-generate a response
                 if (prevState.data.description !== descriptionPayload.description) {
                     descriptionPayload.followup = null
                     descriptionPayload.followup_response = null
                     setFollowup('')
                 } else {
+                    // if there was a followup, set the payload's followup (because prevState data isn't auto-included on submit)
                     descriptionPayload.followup = prevState.data.followup
                 }
-                // if there was a followup, attach to FormData (because prevState data isn't auto-included on submit)
-                
             }
             res = await submitMealDescription(descriptionPayload)
         }
@@ -87,13 +101,13 @@ export default function InputForm() {
                         <span>want a quick demo?</span>
                         <Button
                             variant="outline"
-                            onClick={() => setDescription('baked eggplant parm, baked carrots, and a slice of whole wheat bread')}
+                            onClick={() => setDescription(getRandomExample(descriptionChoices))}
                         >
                             description
                         </Button>
                         <Button 
                             variant="outline" 
-                            onClick={() => setDescription('https://cafedelites.com/authentic-chimichurri-uruguay-argentina/')}
+                            onClick={() => setDescription(getRandomExample(recipeChoices))}
                         >
                             recipe
                         </Button>
