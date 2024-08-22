@@ -19,23 +19,26 @@ app.include_router(entries.router)
 
 @app.get('/ping')
 async def ping():
-    print('pinged from frontend')
-    return {
-        'message': 'pong'
-    }
+    print('backend pinged')
+    return { 'message': 'pong' }
     
     
-# ~~~ backend "auth" middleware, this is necessary to use Stack Auth
+# ~~~ backend "auth" middleware, this is necessary to use Stack Auth from NextJS frontend
 
 secret = os.environ['BACKEND_AUTH_SECRET']
 
 def verify(user_id: str, hashed_user_id):
     return hashlib.sha256((user_id + secret).encode('utf-8')).hexdigest() == hashed_user_id
 
+
 @app.middleware('http')
 async def check_auth(req: Request, call_next):
-    # skip over the /estimate and /recipe routes
-    if req.url.path == '/calculator/from-recipe' or req.url.path == '/calculator/from-description':
+    # skip over /ping and public /calculator routes
+    path = req.url.path
+    if (path == '/ping' 
+        or path == '/calculator/from-description'
+        or path == '/calculator/from-recipe'
+    ):
         res = await call_next(req)
         return res
     # verify that the incoming request has used the proper hashing secret, this serves as JWT-like auth
@@ -45,6 +48,8 @@ async def check_auth(req: Request, call_next):
         if verify(user_id, hashed_user_id):
             res = await call_next(req)
             return res
+        else:
+            raise HTTPException(static_code=400, detail='User ID is not authenticated.')
     else:
-        raise HTTPException(status_code=400, detail='failed backend auth')
+        raise HTTPException(status_code=400, detail='Missing X-UserID or X-HashedUserID header.')
         
