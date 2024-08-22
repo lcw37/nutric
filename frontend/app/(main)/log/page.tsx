@@ -12,29 +12,25 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
-import { 
-    Card, 
-    CardHeader, 
-    CardTitle, 
-    CardContent 
-} from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import { EntryCard, TotalCard } from './Cards';
 
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
-import { deleteEntry, readAllEntries, updateEntry } from '../actions';
-import Link from 'next/link';
+import { readAllEntries } from '../actions';
 
-import { Entry, NutritionBreakdown } from '@/lib/types';
+import { Entry } from '@/lib/types';
 
 
 export default function Log() {
     const user = useUser({ or: 'redirect' })
-    const [date, setDate] = useState<Date>(new Date()); // Initial date
-    const initState: Entry[] = []
-    const [entries, setEntries] = useState(initState);
 
     const [loading, setLoading] = useState(false)
+
+    const [date, setDate] = useState<Date>(new Date()); // Initial date
+
+    const initEntries: Entry[] = []
+    const [entries, setEntries] = useState(initEntries);
 
     useEffect(() => {
         setLoading(true)
@@ -46,6 +42,7 @@ export default function Log() {
         };
         fetchData();
     }, [date]); // Re-fetch when date changes
+
     return (
         <div className="w-full max-w-md mx-auto space-y-8 py-0">
             <Popover>
@@ -65,7 +62,9 @@ export default function Log() {
                     <Calendar
                         mode="single"
                         selected={date}
-                        onSelect={(value) => {if (value) {setDate(value)}}}
+                        onSelect={(value) => {
+                            if (value) { setDate(value) } 
+                        }}
                         initialFocus
                     />
                 </PopoverContent>
@@ -86,138 +85,5 @@ export default function Log() {
                 <p>No entries found</p>
             )}
         </div>
-    )
-}
-
-
-function TotalCard({
-    entries
-}: {
-    entries: Entry[]
-}) {
-    const [totals, setTotals] = useState<NutritionBreakdown>({
-        calories: { min: 0, max: 0, unit: 'cal' },
-        carbs: { min: 0, max: 0, unit: 'g' },
-        fat: { min: 0, max: 0, unit: 'g' },
-        protein: { min: 0, max: 0, unit: 'g' }
-    })
-    useEffect(() => {
-        function sumEntries(entries: Entry[]) {
-            const totals: NutritionBreakdown = {
-                calories: { min: 0, max: 0, unit: 'cal' },
-                carbs: { min: 0, max: 0, unit: 'g' },
-                fat: { min: 0, max: 0, unit: 'g' },
-                protein: { min: 0, max: 0, unit: 'g' }
-            }
-            entries.forEach((entry) => {
-                const { 
-                    servings, 
-                    estimate: {
-                        nutrition_breakdown: {
-                            calories, carbs, fat, protein
-                        }
-                    }
-                } = entry
-                totals.calories.min += calories.min * Number(servings)
-                totals.calories.max += calories.max * Number(servings)
-                totals.carbs.min += carbs.min * Number(servings)
-                totals.carbs.max += carbs.max * Number(servings)
-                totals.fat.min += fat.min * Number(servings)
-                totals.fat.max += fat.max * Number(servings)
-                totals.protein.min += protein.min * Number(servings)
-                totals.protein.max += protein.max * Number(servings)
-            })
-            setTotals(totals)
-        }
-        sumEntries(entries)
-    }, [])
-    return (
-        <Card className="bg-emerald-50 border-none">
-            <CardHeader>
-                <CardTitle>totals</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-4">
-                {Object.keys(totals).length > 0 && (Object.keys(totals).map((k) => (
-                    <div className="flex items-center justify-between" key={k}>
-                        <span>{k}</span>
-                        <span className="font-medium">
-                            {+(totals[k].min).toFixed(1)}-{+(totals[k].max).toFixed(1)} {totals[k].unit}
-                        </span>
-                    </div>
-                )))}
-            </CardContent>
-        </Card>
-    )
-}
-
-
-function EntryCard({
-    entry
-}: {
-    entry: any,
-}) {
-    const { 
-        estimate: {
-            title, 
-            nutrition_breakdown: nutritionBreakdown
-        }, servings 
-    } = entry
-    // const [servings, setServings] = useState(entry.servings) // set as string so trailing decimal points can work
-    // function handleServingsChange(e: any) {
-    //     let newServings = e.target.value
-    //     if (newServings === '.') { newServings = '0.' } // edge case: input is '.'
-    //     if (!Number.isNaN(newServings)) { setServings(newServings) }
-    // }
-    // useEffect(() => {
-    //     setServings(entry.servings)
-    // }, [entry])
-    return (
-        <Card>
-            <CardHeader>
-                <CardTitle>{title}</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-4">
-                {/* <Label>servings</Label> */}
-                {/* <Input value={servings} onChange={handleServingsChange} /> */}
-                <div className="flex items-center justify-between">
-                    <span>servings</span>
-                    <span className="font-medium">{servings}</span>
-                </div>
-                {Object.keys(nutritionBreakdown).map((k) => (
-                    <div className="flex items-center justify-between" key={k}>
-                        <span>{k}</span>
-                        {('description' in entry.data) && (
-                            <span className="font-medium">
-                                {+(Number(servings) * nutritionBreakdown[k].min).toFixed(1)}-{+(Number(servings) * nutritionBreakdown[k].max).toFixed(1)} {nutritionBreakdown[k].unit}
-                            </span>
-                        )}
-                        {('recipe_url' in entry.data) && (
-                            <span className="font-medium">
-                                {+(Number(servings) * nutritionBreakdown[k].min).toFixed(1)} {nutritionBreakdown[k].unit}
-                            </span>
-                        )}
-                    </div>
-                ))}
-                <div className="flex gap-4">
-                    <Link href={`/log/edit/${entry.id}`} className="flex-1">
-                        <Button variant="secondary" className="w-full">
-                            Edit
-                        </Button>
-                    </Link>
-                    <Button 
-                        variant="secondary" 
-                        className="flex-1 p-0"
-                        onClick={async () => {
-                            await deleteEntry(
-                                entry.id, {
-                                author_id: entry.author_id,
-                            })
-                        }}
-                    >
-                        Delete
-                    </Button>
-                </div>
-            </CardContent>
-        </Card>
     )
 }
