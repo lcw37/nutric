@@ -14,17 +14,16 @@ import { submitMealDescription, submitRecipeURL } from "../../actions"
 import isUrl from 'is-url-superb'
 import { Button } from "@/components/ui/button"
 
+import { DescriptionFormData, EstimateResponse, RecipeFormData } from "@/lib/types"
+
 
 export default function InputForm() {
-    const [state, formAction] = useFormState(handleFormSubmit, {
+    const initialState: EstimateResponse = {
         response_type: null,
-        data: {
-            description: null,
-            followup: null,
-            followup_response: null
-        },
+        data: null,
         estimate: null
-    })
+    }
+    const [state, formAction] = useFormState(handleFormSubmit, initialState)
 
     const descriptionTextAreaRef = useRef<HTMLTextAreaElement>(null)
     const followupTextAreaRef = useRef<HTMLTextAreaElement>(null)
@@ -39,23 +38,41 @@ export default function InputForm() {
         }
     }
         
-    async function handleFormSubmit(prevState: any, payload: any) {
+    async function handleFormSubmit(prevState: EstimateResponse, payload: FormData): Promise<EstimateResponse> {
+        let res: EstimateResponse = {
+            response_type: null,
+            data: null,
+            estimate: null
+        }
+        const input = payload.get('description') as string
         // ~~~ if input is a URL:
-        if (isUrl(payload.get('description'))) {
-            const res = await submitRecipeURL(payload)
-            return res
+        if (isUrl(input)) {
+            const recipePayload: RecipeFormData = { recipe_url: input.trim() }
+            res = await submitRecipeURL(recipePayload)
+        } 
+        // ~~~ else if input is a description:
+        else {
+            const descriptionPayload: DescriptionFormData = {
+                description: input,
+                nutrient_fields: Array.from(payload.getAll('nutrientFields')) as string[] || null,
+                followup: payload.get('followup') as string || null,
+                followup_response: payload.get('followup_response') as string || null,
+            }
+            // if there was a previous state and that state was a DescriptionFormData:
+            if (prevState.data && 'description' in prevState.data) {
+                // if the description was changed:
+                if (prevState.data.description !== descriptionPayload.description) {
+                    descriptionPayload.followup = null
+                    descriptionPayload.followup_response = null
+                    setFollowup('')
+                } else {
+                    descriptionPayload.followup = prevState.data.followup
+                }
+                // if there was a followup, attach to FormData (because prevState data isn't auto-included on submit)
+                
+            }
+            res = await submitMealDescription(descriptionPayload)
         }
-        // ~~~ else if input is a text description:
-        // if the initial description was changed, remove existing followup, then regenerate followup/estimate
-        if (prevState.data.description !== payload.get('description')) {
-            prevState.data.followup = null
-            // prevState.data.followup_response = null
-            payload.delete('followup_response')
-            setFollowup('')
-        }
-        // if there was a followup, attach to FormData (because it isn't auto-included on submit)
-        if (prevState.data?.followup) { payload.append('followup', prevState.data.followup) }
-        const res = await submitMealDescription(payload)
         return res
     }
     return (
@@ -97,7 +114,9 @@ export default function InputForm() {
                         required
                     />
                     {/* If followup is received */}
-                    {state.data?.followup && (
+                    {state.data 
+                    && 'description' in state.data 
+                    && state.data?.followup && (
                         <div className="grid gap-3 mt-3">
                             <Label htmlFor="followup_response" className="m-100">
                                 {state.data.followup.toLowerCase()}

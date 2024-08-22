@@ -12,35 +12,21 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+import { 
+    Card, 
+    CardHeader, 
+    CardTitle, 
+    CardContent 
+} from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { deleteEntry, readAllEntries, updateEntry } from '../actions';
 import Link from 'next/link';
 
-import { Skeleton } from "@/components/ui/skeleton"
+import { Entry, NutritionBreakdown } from '@/lib/types';
 
-
-interface Entry {
-    id: string
-    author_id: string
-    data: any
-    estimate: {
-        title: string;
-        nutrition_breakdown: NutritionBreakdown
-    },
-    servings: string,
-    entry_date: string
-}
-interface NutritionBreakdown {
-    calories: { min: number; max: number; unit: string };
-    carbs: { min: number; max: number; unit: string };
-    fat: { min: number; max: number; unit: string };
-    protein: { min: number; max: number; unit: string };
-}
 
 export default function Log() {
     const user = useUser({ or: 'redirect' })
@@ -49,7 +35,6 @@ export default function Log() {
     const [entries, setEntries] = useState(initState);
 
     const [loading, setLoading] = useState(false)
-
 
     useEffect(() => {
         setLoading(true)

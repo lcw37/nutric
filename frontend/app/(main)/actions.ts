@@ -1,6 +1,7 @@
 'use server'
 
 
+import { DescriptionFormData, EstimateResponse, RecipeFormData } from "@/lib/types"
 import { createHash } from "crypto"
 import { revalidatePath } from "next/cache"
 
@@ -15,36 +16,28 @@ export async function pingBackend() {
 }
 
 // export async function submitMealDescription(formData: FormData) {
-export async function submitMealDescription(payload: any) {
+export async function submitMealDescription(payload: DescriptionFormData): Promise<EstimateResponse> {
     // extract payload FormData to object
-    const data = {
-        description: payload.get('description'),
-        followup: payload.get('followup'),
-        followup_response: payload.get('followup_response')
-    }
     const res = await fetch(`${apiBaseUrl}/calculator/from-description`, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(payload)
     })
     return await res.json()
 }
 
 
-export async function submitRecipeURL(payload: any) {
-    const data = {
-        recipe_url: payload.get('description').trim()
-    }
+export async function submitRecipeURL(payload: RecipeFormData): Promise<EstimateResponse> {
     const res = await fetch(`${apiBaseUrl}/calculator/from-recipe`, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(payload)
     })
     return await res.json()
 }

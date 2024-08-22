@@ -64,7 +64,6 @@ def get_estimate(formdata: EstimateFormData) -> MealModel:
     try:
         r = response(p)
         r = json.loads(r)
-        print(r)
         title = r['title']
         estimate = NutritionBreakdown(**r['nutrition_breakdown'])
         return MealModel(

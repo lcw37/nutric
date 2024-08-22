@@ -49,7 +49,15 @@ estimate_prompt = """
     
     Examples:
     Input 1: \"a tofu salad, carrots, a glass of wine\"
-    Output 1: {{\"title\": \"tofu salad, carrots, and wine\", \"nutrition_breakdown\": {{\"calories\": [400, 450, \"cal\"], \"carbs\": [10, 15, \"g\"]}}}}
+    Output 1: {{
+        \"title\": \"tofu salad, carrots, and wine\", 
+        \"nutrition_breakdown\": 
+        {{\"calories\": 
+            {{\"min\": 400, \"max\": 450, \"unit\": \"cal\"}}, 
+        \"carbs\": 
+            {{\"min\": 10, \"max\": 15, \"unit\": \"g\" }} 
+        }}
+    }}
 """
 
 followup_info_prompt = """
