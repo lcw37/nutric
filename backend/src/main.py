@@ -54,7 +54,7 @@ async def check_auth(req: Request, call_next):
             res = await call_next(req)
             return res
         else:
-            raise HTTPException(static_code=400, detail='User ID is not authenticated.')
+            raise HTTPException(status_code=400, detail='User ID is not authenticated.')
     else:
         raise HTTPException(status_code=400, detail='Missing X-UserID or X-HashedUserID header.')
         
