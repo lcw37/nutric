@@ -9,6 +9,8 @@ interface NutritionBreakdown {
     carbs: MinMaxPair
     fat: MinMaxPair;
     protein: MinMaxPair
+
+    [key: string]: MinMaxPair;
 }
 
 interface MealModel {
@@ -28,9 +30,9 @@ interface RecipeFormData {
 }
 
 type EstimateResponse = {
-    response_type: 'followup' | 'estimateFromDescription' | 'estimateFromRecipe' | null;
-    data: DescriptionFormData | RecipeFormData | null;
-    estimate: MealModel | null;
+    response_type: 'followup' | 'estimateFromDescription' | 'estimateFromRecipe' | null
+    data: DescriptionFormData | RecipeFormData | null
+    estimate: MealModel | null
 };
 
 interface Entry {

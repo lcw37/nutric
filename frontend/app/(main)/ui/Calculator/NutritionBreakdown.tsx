@@ -3,18 +3,17 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { AddToLogButton } from "./Buttons"
+import { EstimateResponse } from "@/lib/types"
 
 
 export default function NutritionBreakdownCard({ 
-    estimateType,
-    data,
-    estimate,
+    estimateResponse
 }: { 
-    estimateType: 'fromDescription' | 'fromRecipe',
-    data: any,
-    estimate: any,
+    estimateResponse: EstimateResponse
 }) {
-    const { title, nutrition_breakdown: nutritionBreakdown } = estimate
+    const { response_type, data, estimate } = estimateResponse
+    if (!response_type || !data || !estimate) { return (<></>) }
+    const { title, nutrition_breakdown } = estimate
 
     const [servings, setServings] = useState('1.0') // set as string so trailing decimal points can work
     function handleServingsChange(e: any) {
@@ -30,17 +29,17 @@ export default function NutritionBreakdownCard({
             <CardContent className="grid gap-4">
                 <Label>servings</Label>
                 <Input value={servings} onChange={handleServingsChange} />
-                {Object.keys(nutritionBreakdown).map((k) => (
+                {Object.keys(nutrition_breakdown).map((k) => (
                     <div className="flex items-center justify-between" key={k}>
                         <span>{k}</span>
-                        {(estimateType === 'fromDescription') && (
+                        {(response_type === 'estimateFromDescription') && (
                             <span className="font-medium">
-                                {+(Number(servings) * nutritionBreakdown[k].min).toFixed(1)}-{+(Number(servings) * nutritionBreakdown[k].max).toFixed(1)} {nutritionBreakdown[k].unit}
+                                {+(Number(servings) * nutrition_breakdown[k].min).toFixed(1)}-{+(Number(servings) * nutrition_breakdown[k].max).toFixed(1)} {nutrition_breakdown[k].unit}
                             </span>
                         )}
-                        {(estimateType === 'fromRecipe') && (
+                        {(response_type === 'estimateFromRecipe') && (
                             <span className="font-medium">
-                                {+(Number(servings) * nutritionBreakdown[k].min).toFixed(1)} {nutritionBreakdown[k].unit}
+                                {+(Number(servings) * nutrition_breakdown[k].min).toFixed(1)} {nutrition_breakdown[k].unit}
                             </span>
                         )}
                     </div>
