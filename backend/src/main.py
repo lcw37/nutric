@@ -17,9 +17,12 @@ app.include_router(calculator.router)
 app.include_router(entries.router)
 
 
+@app.get('/')
+async def root():
+    return { 'message': 'backend is running' }
+
 @app.get('/ping')
 async def ping():
-    print('backend pinged')
     return { 'message': 'pong' }
     
     
@@ -34,11 +37,12 @@ def verify(user_id: str, hashed_user_id):
 @app.middleware('http')
 async def check_auth(req: Request, call_next):
     # skip over /ping and public /calculator routes
-    path = req.url.path
-    print('Route called:', path)
-    if (path == '/ping' 
-        or path == '/calculator/from-description'
-        or path == '/calculator/from-recipe'
+    route = req.url.path
+    print('Route called:', route)
+    if (route == '/'
+        or route == '/ping' 
+        or route == '/calculator/from-description'
+        or route == '/calculator/from-recipe'
     ):
         res = await call_next(req)
         return res
