@@ -34,7 +34,7 @@ export default function NutritionBreakdownCard({
                         <span>{k}</span>
                         {(response_type === 'estimateFromDescription') && (
                             <span className="font-medium">
-                                {+(Number(servings) * nutrition_breakdown[k].min).toFixed(1)}-{+(Number(servings) * nutrition_breakdown[k].max).toFixed(1)} {nutrition_breakdown[k].unit}
+                                {+(Number(servings) * nutrition_breakdown[k].min).toFixed(1)} - {+(Number(servings) * nutrition_breakdown[k].max).toFixed(1)} {nutrition_breakdown[k].unit}
                             </span>
                         )}
                         {(response_type === 'estimateFromRecipe') && (

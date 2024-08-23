@@ -15,12 +15,15 @@ import { deleteEntry, updateEntry } from '../actions';
 import Link from 'next/link';
 
 import { Entry, NutritionBreakdown } from '@/lib/types';
+import ProgressBar from './ProgressBar';
 
 
 export function TotalCard({
-    entries
+    entries,
+    targets
 }: {
-    entries: Entry[]
+    entries: Entry[],
+    targets: any // TODO: type this, maybe as NutritionBreakdown
 }) {
     const [totals, setTotals] = useState<NutritionBreakdown>({
         calories: { min: 0, max: 0, unit: 'cal' },
@@ -29,6 +32,7 @@ export function TotalCard({
         protein: { min: 0, max: 0, unit: 'g' }
     })
     useEffect(() => {
+        // sum up all nutrition
         function sumEntries(entries: Entry[]) {
             const totals: NutritionBreakdown = {
                 calories: { min: 0, max: 0, unit: 'cal' },
@@ -68,10 +72,13 @@ export function TotalCard({
                     <div className="flex items-center justify-between" key={k}>
                         <span>{k}</span>
                         <span className="font-medium">
-                            {+(totals[k].min).toFixed(1)}-{+(totals[k].max).toFixed(1)} {totals[k].unit}
+                            {+(totals[k].min).toFixed(1)} - {+(totals[k].max).toFixed(1)} {totals[k].unit}
                         </span>
                     </div>
                 )))}
+                <ProgressBar variant="min-only" min={10} progress={30}/>
+                <ProgressBar variant="max-only" max={10} progress={30}/>
+                <ProgressBar variant="min-max" min={10} max={50} progress={30}/>
             </CardContent>
         </Card>
     )
@@ -119,7 +126,7 @@ export function EntryCard({
                         <span>{k}</span>
                         {('description' in entry.data) && (
                             <span className="font-medium">
-                                {+(Number(servings) * nutritionBreakdown[k].min).toFixed(1)}-{+(Number(servings) * nutritionBreakdown[k].max).toFixed(1)} {nutritionBreakdown[k].unit}
+                                {+(Number(servings) * nutritionBreakdown[k].min).toFixed(1)} - {+(Number(servings) * nutritionBreakdown[k].max).toFixed(1)} {nutritionBreakdown[k].unit}
                             </span>
                         )}
                         {('recipe_url' in entry.data) && (
