@@ -13,32 +13,41 @@ import {
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { EntryCard, TotalCard } from './Cards';
+import { EntryCard, TotalCard } from '../../Cards';
 
 import { cn } from "@/lib/utils"
-import { format } from "date-fns"
-import { readAllEntries, readTargets } from '../actions';
+import { format, parse } from "date-fns"
+import { readAllEntries, readTargets } from '@/app/(main)/actions';
 
 import { EntryModel, TargetsModel, Targets } from '@/lib/types';
+import { redirect, useRouter } from 'next/navigation';
 
 
-export default function Log() {
+export default function Log({ params }: { params: { entryDate: string } }) {
+    const { entryDate } = params
+    const router = useRouter()
+
     const user = useUser({ or: 'redirect' })
     const [loading, setLoading] = useState(false)
-    const [date, setDate] = useState<Date>(new Date()); // Initial date
+
+    const date = parse(entryDate, 'MM-dd-yyyy', new Date())
     const initEntries: EntryModel[] = []
-    const [entries, setEntries] = useState(initEntries);
     const initTargets: Targets = {calories: 100, carbs: 50, fat: 25, protein: 75}
-    const [targets, setTargets] = useState(initTargets)
+    const initState = {
+        entries: initEntries,
+        targets: initTargets
+    }
+    const [state, setState] = useState(initState)
 
     useEffect(() => {
         setLoading(true)
-        const formattedEntryDate = format(date, 'MM-dd-yyyy')
         const fetchData = async () => {
-            const fetchedEntries: EntryModel[] = (await readAllEntries(user.id, {entry_date: formattedEntryDate})).entries
-            const fetchedTargets: Targets = (await readTargets(user.id, {entry_date: formattedEntryDate})).targets
-            setEntries(fetchedEntries);
-            setTargets(fetchedTargets)
+            const fetchedEntries: EntryModel[] = (await readAllEntries(user.id, {entry_date: entryDate})).entries
+            const fetchedTargets: Targets = (await readTargets(user.id, {entry_date: entryDate})).targets
+            setState({
+                entries: fetchedEntries,
+                targets: fetchedTargets
+            })
             setLoading(false);
         };
         fetchData();
@@ -64,7 +73,14 @@ export default function Log() {
                         mode="single"
                         selected={date}
                         onSelect={(value) => {
-                            if (value) { setDate(value) } 
+                            if (value) {
+                                try {
+                                    const newDate = format(value, 'MM-dd-yyyy')
+                                    router.push(`/log/view/${newDate}`)
+                                } catch (err) {
+                                    router.push('/')
+                                }
+                            } 
                         }}
                         initialFocus
                     />
@@ -75,10 +91,10 @@ export default function Log() {
                     <Skeleton className="h-[240px] rounded-xl" />
                     <Skeleton className="h-[300px] rounded-xl" />
                 </>
-            ) : entries.length > 0 && targets ? (
+            ) : state.entries.length > 0 && state.targets ? (
                 <>
-                    <TotalCard entries={entries} targets={targets}/>
-                    {entries.map((entry: EntryModel, index: number) => (
+                    <TotalCard entries={state.entries} targets={state.targets}/>
+                    {state.entries.map((entry: EntryModel, index: number) => (
                         <EntryCard key={index.toString() + date} entry={entry} />
                     ))}
                 </>
