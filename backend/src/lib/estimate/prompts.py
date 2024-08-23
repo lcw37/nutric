@@ -58,6 +58,8 @@ estimate_prompt = """
             {{\"min\": 10, \"max\": 15, \"unit\": \"g\" }} 
         }}
     }}
+    
+    Double-check that each field in {nutrient_fields} is present in the final JSON output. 
 """
 
 followup_info_prompt = """

@@ -64,8 +64,12 @@ def get_estimate(formdata: EstimateFormData) -> MealModel:
     try:
         r = response(p)
         r = json.loads(r)
-        title = r['title']
-        estimate = NutritionBreakdown(**r['nutrition_breakdown'])
+        title, nutrition_breakdown = r['title'], r['nutrition_breakdown']
+        # check that all specified nutrient fields exist
+        for n in nutrient_fields:
+            if nutrition_breakdown[n] is None:
+                raise Exception(f'Missing nutrient field in output: {n}.')
+        estimate = NutritionBreakdown(**nutrition_breakdown)
         return MealModel(
             title=title,
             nutrition_breakdown=estimate
