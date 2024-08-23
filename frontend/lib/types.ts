@@ -47,6 +47,15 @@ interface Entry {
     entry_date?: string
 }
 
+interface Targets {
+    calories: number,
+    carbs: number,
+    fat: number,
+    protein: number
+
+    [key: string]: number
+}
+
 
 export type {
     NutritionBreakdown, 
@@ -54,5 +63,6 @@ export type {
     DescriptionFormData,
     RecipeFormData,
     EstimateResponse,
-    Entry
+    Entry,
+    Targets
 }

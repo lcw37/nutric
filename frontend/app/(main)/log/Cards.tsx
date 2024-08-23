@@ -14,7 +14,7 @@ import {
 import { deleteEntry, updateEntry } from '../actions';
 import Link from 'next/link';
 
-import { Entry, NutritionBreakdown } from '@/lib/types';
+import { Entry, NutritionBreakdown, Targets } from '@/lib/types';
 import ProgressBar from './ProgressBar';
 
 
@@ -23,7 +23,7 @@ export function TotalCard({
     targets
 }: {
     entries: Entry[],
-    targets: any // TODO: type this, maybe as NutritionBreakdown
+    targets: Targets // TODO: type this, maybe as NutritionBreakdown
 }) {
     const [totals, setTotals] = useState<NutritionBreakdown>({
         calories: { min: 0, max: 0, unit: 'cal' },
@@ -69,16 +69,27 @@ export function TotalCard({
             </CardHeader>
             <CardContent className="grid gap-4">
                 {Object.keys(totals).length > 0 && (Object.keys(totals).map((k) => (
-                    <div className="flex items-center justify-between" key={k}>
-                        <span>{k}</span>
-                        <span className="font-medium">
-                            {+(totals[k].min).toFixed(1)} - {+(totals[k].max).toFixed(1)} {totals[k].unit}
-                        </span>
-                    </div>
+                    <ProgressBar key={k}
+                        title={k}
+                        minMaxPair={totals[k]}
+                        target={targets[k]}
+                    />
                 )))}
-                <ProgressBar variant="min-only" min={10} progress={30}/>
-                <ProgressBar variant="max-only" max={10} progress={30}/>
-                <ProgressBar variant="min-max" min={10} max={50} progress={30}/>
+                <ProgressBar 
+                    title={'calories'}
+                    minMaxPair={{min: 500, max: 600, unit: 'cal'}}
+                    target={1500}
+                />
+                <ProgressBar 
+                    title={'fat'}
+                    minMaxPair={{min: 500, max: 600, unit: 'g'}}
+                    target={525}
+                />
+                <ProgressBar 
+                    title={'carbs'}
+                    minMaxPair={{min: 550, max: 600, unit: 'g'}}
+                    target={525} 
+                />
             </CardContent>
         </Card>
     )

@@ -19,25 +19,27 @@ import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { readAllEntries } from '../actions';
 
-import { Entry } from '@/lib/types';
+import { Entry, Targets } from '@/lib/types';
 
 
 export default function Log() {
     const user = useUser({ or: 'redirect' })
-
     const [loading, setLoading] = useState(false)
-
     const [date, setDate] = useState<Date>(new Date()); // Initial date
-
     const initEntries: Entry[] = []
     const [entries, setEntries] = useState(initEntries);
+    const initTargets: Targets = {calories: 100, carbs: 50, fat: 25, protein: 75}
+    const [targets, setTargets] = useState(initTargets)
 
     useEffect(() => {
         setLoading(true)
         const formattedEntryDate = format(date, 'MM-dd-yyyy')
         const fetchData = async () => {
             const fetchedEntries: Entry[] = (await readAllEntries(user.id, {entry_date: formattedEntryDate})).entries
+            // TODO: read user's targets
+            // const fetchTargets: any = await readTargets(user.id, {entry_date: formattedEntryDate})
             setEntries(fetchedEntries);
+            // setTargets(fetchedTargets)
             setLoading(false);
         };
         fetchData();
@@ -76,7 +78,7 @@ export default function Log() {
                 </>
             ) : entries.length > 0 ? (
                 <>
-                    <TotalCard entries={entries}/>
+                    <TotalCard entries={entries} targets={targets}/>
                     {entries.map((entry: Entry, index: number) => (
                         <EntryCard key={index.toString() + date} entry={entry} />
                     ))}
