@@ -105,7 +105,7 @@ export function EntryCard({
     return (
         <Card>
             <CardHeader>
-                <CardTitle>{title}</CardTitle>
+                <CardTitle>{title.toLowerCase()}</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4">
                 {/* <Label>servings</Label> */}

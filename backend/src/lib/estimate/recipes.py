@@ -30,7 +30,7 @@ def get_nutrition_from_url(
             
         parsed_nutrients[k] = {'min': amount, 'max': amount,'unit': unit}
     return MealModel(
-        title=scraper.title().lower(),
+        title=scraper.title(),
         nutrition_breakdown=NutritionBreakdown(**parsed_nutrients)
     )
 
