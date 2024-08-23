@@ -4,7 +4,7 @@ from fastapi import (
     HTTPException,
     Request
 )
-from .routers import entries, calculator
+from .routers import entries, calculator, targets
 import hashlib
 import os
 
@@ -15,6 +15,7 @@ if _: # see /lib/setup.py, this fixes a linting warning
 app = FastAPI()
 app.include_router(calculator.router)
 app.include_router(entries.router)
+app.include_router(targets.router)
 
 
 @app.get('/')

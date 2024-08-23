@@ -35,14 +35,11 @@ type EstimateResponse = {
     estimate: MealModel | null
 };
 
-interface Entry {
+interface EntryModel {
     id?: string
     author_id: string
     data: any
-    estimate: {
-        title: string;
-        nutrition_breakdown: NutritionBreakdown
-    },
+    estimate: MealModel,
     servings: string,
     entry_date?: string
 }
@@ -56,6 +53,13 @@ interface Targets {
     [key: string]: number
 }
 
+interface TargetsModel {
+    id?: string,
+    author_id: string,
+    targets: Targets,
+    entry_date?: string
+}
+
 
 export type {
     NutritionBreakdown, 
@@ -63,6 +67,7 @@ export type {
     DescriptionFormData,
     RecipeFormData,
     EstimateResponse,
-    Entry,
+    EntryModel,
+    TargetsModel,
     Targets
 }

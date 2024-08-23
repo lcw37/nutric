@@ -14,7 +14,7 @@ import {
 import { deleteEntry, updateEntry } from '../actions';
 import Link from 'next/link';
 
-import { Entry, NutritionBreakdown, Targets } from '@/lib/types';
+import { EntryModel, NutritionBreakdown, Targets } from '@/lib/types';
 import ProgressBar from './ProgressBar';
 
 
@@ -22,7 +22,7 @@ export function TotalCard({
     entries,
     targets
 }: {
-    entries: Entry[],
+    entries: EntryModel[],
     targets: Targets // TODO: type this, maybe as NutritionBreakdown
 }) {
     const [totals, setTotals] = useState<NutritionBreakdown>({
@@ -33,7 +33,7 @@ export function TotalCard({
     })
     useEffect(() => {
         // sum up all nutrition
-        function sumEntries(entries: Entry[]) {
+        function sumEntries(entries: EntryModel[]) {
             const totals: NutritionBreakdown = {
                 calories: { min: 0, max: 0, unit: 'cal' },
                 carbs: { min: 0, max: 0, unit: 'g' },
@@ -75,21 +75,6 @@ export function TotalCard({
                         target={targets[k]}
                     />
                 )))}
-                <ProgressBar 
-                    title={'calories'}
-                    minMaxPair={{min: 500, max: 600, unit: 'cal'}}
-                    target={1500}
-                />
-                <ProgressBar 
-                    title={'fat'}
-                    minMaxPair={{min: 500, max: 600, unit: 'g'}}
-                    target={525}
-                />
-                <ProgressBar 
-                    title={'carbs'}
-                    minMaxPair={{min: 550, max: 600, unit: 'g'}}
-                    target={525} 
-                />
             </CardContent>
         </Card>
     )
@@ -99,7 +84,7 @@ export function TotalCard({
 export function EntryCard({
     entry
 }: {
-    entry: Entry,
+    entry: EntryModel,
 }) {
     const { 
         id,

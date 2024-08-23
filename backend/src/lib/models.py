@@ -64,7 +64,7 @@ class EstimateResponse(BaseModel):
     
     
     
-# ~~~ MongoDB models
+# ~~~ MongoDB Entry models
 
 PyObjectId = Annotated[str, BeforeValidator(str)]
 
@@ -100,3 +100,23 @@ class UpdateEntryModel(BaseModel):
     
 class EntryCollection(BaseModel):
     entries: list[EntryModel]
+    
+    
+# ~~~ MongoDB Targets models
+
+class Targets(BaseModel):
+    calories: NonNegativeInt
+    carbs: NonNegativeInt
+    fat: NonNegativeInt
+    protein: NonNegativeInt
+    
+class TargetsModel(BaseModel):
+    id: Optional[PyObjectId] = Field(alias='_id', default=None)
+    author_id: str
+    targets: Targets
+    entry_date: str = date.today().strftime('%m-%d-%Y')
+    
+    model_config = ConfigDict(
+        populate_by_name=True,
+        arbitrary_types_allowed=True
+    )

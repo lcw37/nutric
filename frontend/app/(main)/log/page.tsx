@@ -17,16 +17,16 @@ import { EntryCard, TotalCard } from './Cards';
 
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
-import { readAllEntries } from '../actions';
+import { readAllEntries, readTargets } from '../actions';
 
-import { Entry, Targets } from '@/lib/types';
+import { EntryModel, TargetsModel, Targets } from '@/lib/types';
 
 
 export default function Log() {
     const user = useUser({ or: 'redirect' })
     const [loading, setLoading] = useState(false)
     const [date, setDate] = useState<Date>(new Date()); // Initial date
-    const initEntries: Entry[] = []
+    const initEntries: EntryModel[] = []
     const [entries, setEntries] = useState(initEntries);
     const initTargets: Targets = {calories: 100, carbs: 50, fat: 25, protein: 75}
     const [targets, setTargets] = useState(initTargets)
@@ -35,11 +35,10 @@ export default function Log() {
         setLoading(true)
         const formattedEntryDate = format(date, 'MM-dd-yyyy')
         const fetchData = async () => {
-            const fetchedEntries: Entry[] = (await readAllEntries(user.id, {entry_date: formattedEntryDate})).entries
-            // TODO: read user's targets
-            // const fetchTargets: any = await readTargets(user.id, {entry_date: formattedEntryDate})
+            const fetchedEntries: EntryModel[] = (await readAllEntries(user.id, {entry_date: formattedEntryDate})).entries
+            const fetchedTargets: Targets = (await readTargets(user.id, {entry_date: formattedEntryDate})).targets
             setEntries(fetchedEntries);
-            // setTargets(fetchedTargets)
+            setTargets(fetchedTargets)
             setLoading(false);
         };
         fetchData();
@@ -76,10 +75,10 @@ export default function Log() {
                     <Skeleton className="h-[240px] rounded-xl" />
                     <Skeleton className="h-[300px] rounded-xl" />
                 </>
-            ) : entries.length > 0 ? (
+            ) : entries.length > 0 && targets ? (
                 <>
                     <TotalCard entries={entries} targets={targets}/>
-                    {entries.map((entry: Entry, index: number) => (
+                    {entries.map((entry: EntryModel, index: number) => (
                         <EntryCard key={index.toString() + date} entry={entry} />
                     ))}
                 </>

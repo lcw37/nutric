@@ -43,11 +43,12 @@ async def list_entries(
 ):
     user_id = req.headers.get('X-UserId')
     filter = {'author_id': user_id}
-    if entry_date: # check if entry_date is in correct format
+    # check if entry_date is in correct format
+    if entry_date: 
         try:
             datetime.strptime(entry_date, '%m-%d-%Y')
         except ValueError:
-            raise HTTPException(404, 'invalid date formate')
+            raise HTTPException(404, 'invalid date format')
         filter['entry_date'] = entry_date
         
     entries = await entries_collection.find(filter).skip(offset).limit(limit).to_list(length=limit)
