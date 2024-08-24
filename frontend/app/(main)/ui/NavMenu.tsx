@@ -6,6 +6,8 @@ import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescri
 import { Button } from "@/components/ui/button";
 import { useUser, UserButton } from "@stackframe/stack";
 import { Separator } from "@/components/ui/separator";
+import { format } from "date-fns";
+
 
 
 function Logo() {
@@ -34,7 +36,7 @@ export default function NavMenu() {
                             calculator
                         </Link>
                         {user && (
-                            <Link href="/log" className="hover:text-green-700">
+                            <Link href={`/log/view/${format(new Date(), 'MM-dd-yyyy')}`} className="hover:text-green-700">
                                 my log
                             </Link>
                         )}
