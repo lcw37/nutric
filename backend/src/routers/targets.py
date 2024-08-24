@@ -9,8 +9,6 @@ from ..lib.models import (
     TargetsModel
 )
 from ..lib.db.mongodb import targets_collection
-from bson import ObjectId
-from pymongo import ReturnDocument
 from datetime import date, datetime
 from pymongo import DESCENDING
 

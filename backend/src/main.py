@@ -39,7 +39,6 @@ def verify(user_id: str, hashed_user_id):
 async def check_auth(req: Request, call_next):
     # skip over /ping and public /calculator routes
     route = req.url.path
-    print('Route called:', route)
     if (route == '/'
         or route == '/ping' 
         or route == '/calculator/from-description'
