@@ -17,7 +17,7 @@ import { EntryCard, TotalCard, SkeletonTotalCard } from '../../Cards';
 
 import { cn } from "@/lib/utils"
 import { format, parse } from "date-fns"
-import { readAllEntries, readTargets } from '@/app/(main)/actions';
+import { deleteEntry, readAllEntries, readTargets } from '@/app/(main)/actions';
 
 import { EntryModel, TargetsModel, Targets } from '@/lib/types';
 import { redirect, useRouter } from 'next/navigation';
@@ -31,13 +31,12 @@ export default function Log({ params }: { params: { entryDate: string } }) {
     const [loading, setLoading] = useState(false)
 
     const date = parse(entryDate, 'MM-dd-yyyy', new Date())
+
     const initEntries: EntryModel[] = []
+    const [entries, setEntries] = useState(initEntries)
+    
     const initTargets: Targets = {calories: 100, carbs: 50, fat: 25, protein: 75}
-    const initState = {
-        entries: initEntries,
-        targets: initTargets
-    }
-    const [state, setState] = useState(initState)
+    const [targets, setTargets] = useState(initTargets)
 
     useEffect(() => {
         setLoading(true)
@@ -49,11 +48,9 @@ export default function Log({ params }: { params: { entryDate: string } }) {
             } catch (error) {
                 fetchedTargets = (await readTargets(user.id, {})).targets
             }
-            setState({
-                entries: fetchedEntries,
-                targets: fetchedTargets
-            })
-            setTimeout(() => {setLoading(false)}, 2000);
+            setEntries(fetchedEntries)
+            setTargets(fetchedTargets)
+            setLoading(false)
         };
         fetchData();
     }, [])
@@ -97,16 +94,22 @@ export default function Log({ params }: { params: { entryDate: string } }) {
                 </>
             ) : (
                 <>
-                    {state.targets ? (
-                        <TotalCard entries={state.entries} targets={state.targets}/>
+                    {targets ? (
+                        <TotalCard 
+                            entries={entries} 
+                            targets={targets}
+                        />
                     ) : (
                         <p>No targets found</p>
                     )}
                     {/* show entries if found */}
-                    {state.entries.length > 0 ? (
+                    {entries.length > 0 ? (
                         <>
-                            {state.entries.map((entry: EntryModel, index: number) => (
-                                <EntryCard key={index.toString() + date} entry={entry} />
+                            {entries.map((entry: EntryModel, index: number) => (
+                                <EntryCard 
+                                    key={index.toString() + date} 
+                                    entry={entry}
+                                />
                             ))}
                         </>
                     ) : (

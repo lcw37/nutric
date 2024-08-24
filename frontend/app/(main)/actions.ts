@@ -4,6 +4,7 @@
 import { DescriptionFormData, EntryModel, EstimateResponse, RecipeFormData, Targets, TargetsModel } from "@/lib/types"
 import { createHash } from "crypto"
 import { revalidatePath } from "next/cache"
+import { redirect } from "next/navigation"
 
 
 const apiBaseUrl = process.env.BACKEND_API_URL || 'http://localhost:8000'
@@ -96,7 +97,8 @@ export async function readAllEntries(
         headers: {
             'X-UserId': userId,
             'X-HashedUserId': hashUserId(userId)
-        }
+        },
+        cache: 'no-store'
     })
     return await res.json()
 }
@@ -124,16 +126,18 @@ export async function deleteEntry(
     entryId: string,
     payload: any
 ): Promise<EntryModel> {
-    const userId = payload.author_id
+    const { author_id: userId, entry_date } = payload
     const res = await fetch(`${apiBaseUrl}/entries/${entryId}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
             'X-UserId': userId,
             'X-HashedUserId': hashUserId(userId)
-        }
+        },
+        cache: 'no-store'
     })
-    // revalidatePath('/log')
+    // revalidatePath(`/log/view/${entry_date}`)
+    // redirect(`/log/view/${entry_date}`)
     return await res.json()
 }
 

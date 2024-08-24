@@ -18,14 +18,16 @@ import Link from 'next/link';
 import { EntryModel, NutritionBreakdown, Targets } from '@/lib/types';
 import { ProgressBar, SkeletonProgressBar } from './ProgressBar';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useRouter } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 
 export function TotalCard({
     entries,
-    targets
+    targets,
 }: {
     entries: EntryModel[],
-    targets: Targets // TODO: type this, maybe as NutritionBreakdown
+    targets: Targets, // TODO: type this, maybe as NutritionBreakdown
 }) {
     const [totals, setTotals] = useState<NutritionBreakdown>({
         calories: { min: 0, max: 0, unit: 'cal' },
@@ -107,6 +109,7 @@ export function EntryCard({
 }: {
     entry: EntryModel,
 }) {
+    const router = useRouter()
     const { 
         id,
         author_id,
@@ -114,7 +117,8 @@ export function EntryCard({
             title, 
             nutrition_breakdown: nutritionBreakdown
         }, 
-        servings 
+        servings,
+        entry_date
     } = entry
     if (!id) return (<></>)
     // const [servings, setServings] = useState(entry.servings) // set as string so trailing decimal points can work
@@ -165,8 +169,14 @@ export function EntryCard({
                         onClick={async () => {
                             await deleteEntry(
                                 id, {
-                                author_id: author_id,
-                            })
+                                    author_id: author_id,
+                                    entry_date: entry_date
+                                }
+                            );
+                            // router.refresh()
+                            // router.push(`/log/view/${entry_date}`)
+                            // router.refresh()
+                            
                         }}
                     >
                         Delete
