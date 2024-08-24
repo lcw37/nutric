@@ -41,7 +41,7 @@ interface EntryModel {
     data: any
     estimate: MealModel,
     servings: string,
-    entry_date?: string
+    entry_date: string
 }
 
 interface Targets {

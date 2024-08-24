@@ -18,8 +18,6 @@ import Link from 'next/link';
 import { EntryModel, NutritionBreakdown, Targets } from '@/lib/types';
 import { ProgressBar, SkeletonProgressBar } from './ProgressBar';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useRouter } from 'next/navigation';
-import { revalidatePath } from 'next/cache';
 
 
 export function TotalCard({
@@ -65,7 +63,7 @@ export function TotalCard({
             setTotals(totals)
         }
         sumEntries(entries)
-    }, [])
+    }, [entries])
     return (
         <Card className="bg-emerald-50 border-none">
             <CardHeader>
@@ -96,7 +94,7 @@ export function SkeletonTotalCard() {
                 </CardHeader>
                 <CardContent className="grid gap-4">
                     {['calories', 'cards', 'fat', 'protein'].map((k) => {
-                        return <SkeletonProgressBar />
+                        return <SkeletonProgressBar key={k}/>
                     })}
                 </CardContent>
             </Card>
@@ -105,11 +103,12 @@ export function SkeletonTotalCard() {
 }
 
 export function EntryCard({
-    entry
+    entry,
+    handleDeleteEntry
 }: {
     entry: EntryModel,
+    handleDeleteEntry: (deletedEntry: EntryModel) => void
 }) {
-    const router = useRouter()
     const { 
         id,
         author_id,
@@ -121,6 +120,7 @@ export function EntryCard({
         entry_date
     } = entry
     if (!id) return (<></>) // TODO: I think if the EntryModel id field is not optional, this is not necessary
+    
     // const [servings, setServings] = useState(entry.servings) // set as string so trailing decimal points can work
     // function handleServingsChange(e: any) {
     //     let newServings = e.target.value
@@ -172,10 +172,8 @@ export function EntryCard({
                                     author_id: author_id,
                                     entry_date: entry_date
                                 }
-                            );
-                            // router.refresh()
-                            // router.push(`/log/view/${entry_date}`)
-                            // router.refresh()
+                            )
+                            handleDeleteEntry(entry)
                         }}
                     >
                         Delete

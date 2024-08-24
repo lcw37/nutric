@@ -56,6 +56,12 @@ export default function Log({ params }: { params: { entryDate: string } }) {
         };
         fetchData();
     }, [])
+
+    async function handleDeleteEntry(deletedEntry: EntryModel) {
+        const updatedEntries = entries.filter((entry) => entry !== deletedEntry)
+        setEntries(updatedEntries)
+    }
+
     return (
         <div className="w-full max-w-md mx-auto space-y-8 py-0">
             {/* date selector */}
@@ -113,6 +119,7 @@ export default function Log({ params }: { params: { entryDate: string } }) {
                                 <EntryCard 
                                     key={index.toString() + date} 
                                     entry={entry}
+                                    handleDeleteEntry={handleDeleteEntry}
                                 />
                             ))}
                         </>
