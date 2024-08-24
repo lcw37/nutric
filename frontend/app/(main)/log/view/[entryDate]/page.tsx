@@ -12,24 +12,23 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
 import { EntryCard, TotalCard, SkeletonTotalCard } from '../../Cards';
 
 import { cn } from "@/lib/utils"
 import { format, parse } from "date-fns"
-import { deleteEntry, readAllEntries, readTargets } from '@/app/(main)/actions';
+import { readAllEntries, readTargets } from '@/app/(main)/actions';
 
-import { EntryModel, TargetsModel, Targets } from '@/lib/types';
-import { redirect, useRouter } from 'next/navigation';
+import { EntryModel, Targets } from '@/lib/types';
+import { useRouter } from 'next/navigation';
 
 
 export default function Log({ params }: { params: { entryDate: string } }) {
-    const { entryDate } = params
     const router = useRouter()
-
     const user = useUser({ or: 'redirect' })
+
     const [loading, setLoading] = useState(false)
 
+    const { entryDate } = params
     const date = parse(entryDate, 'MM-dd-yyyy', new Date())
 
     const initEntries: EntryModel[] = []
@@ -41,11 +40,14 @@ export default function Log({ params }: { params: { entryDate: string } }) {
     useEffect(() => {
         setLoading(true)
         const fetchData = async () => {
+            // get entries + targets for current user and current page's entry date
             const fetchedEntries: EntryModel[] = (await readAllEntries(user.id, {entry_date: entryDate})).entries
             let fetchedTargets: Targets = initTargets
             try {
+                // tries to fetch the most recently created targets
                 fetchedTargets = (await readTargets(user.id, {entry_date: entryDate})).targets
             } catch (error) {
+                // if the current page's entry date is before any existing targets, fetch the most recent (TODO: check that this throws an error if targets doesn't exist)
                 fetchedTargets = (await readTargets(user.id, {})).targets
             }
             setEntries(fetchedEntries)
@@ -56,6 +58,7 @@ export default function Log({ params }: { params: { entryDate: string } }) {
     }, [])
     return (
         <div className="w-full max-w-md mx-auto space-y-8 py-0">
+            {/* date selector */}
             <Popover>
                 <PopoverTrigger asChild>
                     <Button
@@ -87,21 +90,22 @@ export default function Log({ params }: { params: { entryDate: string } }) {
                     />
                 </PopoverContent>
             </Popover>
+
             {loading ? (
-                <>
-                    {/* <Skeleton className="h-[240px] rounded-xl" /> */}
-                    <SkeletonTotalCard />
-                </>
+                <SkeletonTotalCard />
             ) : (
                 <>
+                    {/* show targets if found */}
                     {targets ? (
                         <TotalCard 
                             entries={entries} 
                             targets={targets}
                         />
                     ) : (
+                        // TODO: this shows because the trycatch readTargets() never reaches the catch
                         <p>No targets found</p>
                     )}
+
                     {/* show entries if found */}
                     {entries.length > 0 ? (
                         <>

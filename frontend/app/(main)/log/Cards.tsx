@@ -120,7 +120,7 @@ export function EntryCard({
         servings,
         entry_date
     } = entry
-    if (!id) return (<></>)
+    if (!id) return (<></>) // TODO: I think if the EntryModel id field is not optional, this is not necessary
     // const [servings, setServings] = useState(entry.servings) // set as string so trailing decimal points can work
     // function handleServingsChange(e: any) {
     //     let newServings = e.target.value
@@ -176,7 +176,6 @@ export function EntryCard({
                             // router.refresh()
                             // router.push(`/log/view/${entry_date}`)
                             // router.refresh()
-                            
                         }}
                     >
                         Delete

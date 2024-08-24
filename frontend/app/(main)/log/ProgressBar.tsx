@@ -18,7 +18,6 @@ export function ProgressBar({
 
     const isRange = (currentMin !== currentMax)
 
-
     let numberText = `${+(currentMin).toFixed(1)} / ${+(target).toFixed(1)} ${unit}`
     let percentText = `${progressAvg.toFixed(0)}%`
     if (isRange) {
