@@ -43,16 +43,21 @@ export default function Log({ params }: { params: { entryDate: string } }) {
         setLoading(true)
         const fetchData = async () => {
             const fetchedEntries: EntryModel[] = (await readAllEntries(user.id, {entry_date: entryDate})).entries
-            const fetchedTargets: Targets = (await readTargets(user.id, {entry_date: entryDate})).targets
+            let fetchedTargets: Targets = initTargets
+            try {
+                fetchedTargets = (await readTargets(user.id, {entry_date: entryDate})).targets
+            } catch (error) {
+                fetchedTargets = (await readTargets(user.id, {})).targets
+            }
             setState({
                 entries: fetchedEntries,
                 targets: fetchedTargets
             })
             setLoading(false);
+            console.log(state)
         };
         fetchData();
-    }, []); // Re-fetch when date changes
-
+    }, [])
     return (
         <div className="w-full max-w-md mx-auto space-y-8 py-0">
             <Popover>
