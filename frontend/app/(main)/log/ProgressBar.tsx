@@ -1,6 +1,8 @@
+import { Skeleton } from "@/components/ui/skeleton"
 import clsx from "clsx"
 
-export default function ProgressBar({
+
+export function ProgressBar({
     title,
     minMaxPair,
     target
@@ -55,6 +57,25 @@ export default function ProgressBar({
                     style={{width: `${progressAvg}%`, maxWidth: '100%'}} 
                 />
             </div>
+        </div>
+    )
+}
+
+
+export function SkeletonProgressBar() {
+    return (
+        <div className="grid gap-1">
+            {/* text above progress bar */}
+            <div className="flex justify-between items-baseline">
+                <div className="flex items-baseline gap-4">
+                    <Skeleton className="h-4 w-14"/>
+                    <Skeleton className="h-3 w-16"/>
+                </div>
+                <Skeleton className="h-3 w-5"/>
+            </div>
+
+            {/* progress bar */}
+            <Skeleton className="h-2 w-full rounded-full relative"/>
         </div>
     )
 }

@@ -8,14 +8,16 @@ import {
     Card, 
     CardHeader, 
     CardTitle, 
-    CardContent 
+    CardContent, 
+    CardDescription
 } from "@/components/ui/card"
 
 import { deleteEntry, updateEntry } from '../actions';
 import Link from 'next/link';
 
 import { EntryModel, NutritionBreakdown, Targets } from '@/lib/types';
-import ProgressBar from './ProgressBar';
+import { ProgressBar, SkeletonProgressBar } from './ProgressBar';
+import { Skeleton } from '@/components/ui/skeleton';
 
 
 export function TotalCard({
@@ -80,6 +82,25 @@ export function TotalCard({
     )
 }
 
+export function SkeletonTotalCard() {
+    return (
+        <>
+            <Card className='border-none'>
+                <CardHeader>
+                    <CardTitle>
+                        <Skeleton className="h-4 w-12" />
+                    </CardTitle>
+                    <CardDescription></CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-4">
+                    {['calories', 'cards', 'fat', 'protein'].map((k) => {
+                        return <SkeletonProgressBar />
+                    })}
+                </CardContent>
+            </Card>
+        </>
+    )
+}
 
 export function EntryCard({
     entry

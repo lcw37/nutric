@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { EntryCard, TotalCard } from '../../Cards';
+import { EntryCard, TotalCard, SkeletonTotalCard } from '../../Cards';
 
 import { cn } from "@/lib/utils"
 import { format, parse } from "date-fns"
@@ -53,8 +53,7 @@ export default function Log({ params }: { params: { entryDate: string } }) {
                 entries: fetchedEntries,
                 targets: fetchedTargets
             })
-            setLoading(false);
-            console.log(state)
+            setTimeout(() => {setLoading(false)}, 2000);
         };
         fetchData();
     }, [])
@@ -93,18 +92,27 @@ export default function Log({ params }: { params: { entryDate: string } }) {
             </Popover>
             {loading ? (
                 <>
-                    <Skeleton className="h-[240px] rounded-xl" />
-                    <Skeleton className="h-[300px] rounded-xl" />
-                </>
-            ) : state.entries.length > 0 && state.targets ? (
-                <>
-                    <TotalCard entries={state.entries} targets={state.targets}/>
-                    {state.entries.map((entry: EntryModel, index: number) => (
-                        <EntryCard key={index.toString() + date} entry={entry} />
-                    ))}
+                    {/* <Skeleton className="h-[240px] rounded-xl" /> */}
+                    <SkeletonTotalCard />
                 </>
             ) : (
-                <p>No entries found</p>
+                <>
+                    {state.targets ? (
+                        <TotalCard entries={state.entries} targets={state.targets}/>
+                    ) : (
+                        <p>No targets found</p>
+                    )}
+                    {/* show entries if found */}
+                    {state.entries.length > 0 ? (
+                        <>
+                            {state.entries.map((entry: EntryModel, index: number) => (
+                                <EntryCard key={index.toString() + date} entry={entry} />
+                            ))}
+                        </>
+                    ) : (
+                        <p>No entries found</p>
+                    )}
+                </>
             )}
         </div>
     )
