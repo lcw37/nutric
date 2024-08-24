@@ -84,7 +84,7 @@ export default function NavMenu() {
                                 </SheetTrigger>
                                 {user && (
                                     <SheetTrigger asChild>
-                                        <Link href="/log" className="hover:text-green-700">
+                                        <Link href={`/log/view/${format(new Date(), 'MM-dd-yyyy')}`} className="hover:text-green-700">
                                             my log
                                         </Link>
                                     </SheetTrigger>
