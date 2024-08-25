@@ -120,6 +120,8 @@ export function EntryCard({
         entry_date
     } = entry
     if (!id) return (<></>) // TODO: I think if the EntryModel id field is not optional, this is not necessary
+
+    const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false)
     
     // const [servings, setServings] = useState(entry.servings) // set as string so trailing decimal points can work
     // function handleServingsChange(e: any) {
@@ -163,21 +165,40 @@ export function EntryCard({
                             Edit
                         </Button>
                     </Link>
-                    <Button 
-                        variant="secondary" 
-                        className="flex-1 p-0"
-                        onClick={async () => {
-                            await deleteEntry(
-                                id, {
-                                    author_id: author_id,
-                                    entry_date: entry_date
-                                }
-                            )
-                            handleDeleteEntry(entry)
-                        }}
-                    >
-                        Delete
-                    </Button>
+                    {!isDeleteConfirmOpen ? (
+                        <Button 
+                            variant="secondary" 
+                            className="flex-1 p-0"
+                            onClick={() => setIsDeleteConfirmOpen(true)}
+                        >
+                            Delete
+                        </Button>
+                    ) : (
+                        <div className="flex-1 p-0">
+                            <Button 
+                                variant="secondary" 
+                                className="w-1/4 border-r-4 border-r-white"
+                                onClick={() => setIsDeleteConfirmOpen(false)}
+                            >
+                                x
+                            </Button>
+                            <Button 
+                                variant="secondary" 
+                                className="w-3/4"
+                                onClick={async () => {
+                                    await deleteEntry(
+                                        id, {
+                                            author_id: author_id,
+                                            entry_date: entry_date
+                                        }
+                                    )
+                                    handleDeleteEntry(entry)
+                                }}
+                            >
+                                Confirm
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </CardContent>
         </Card>

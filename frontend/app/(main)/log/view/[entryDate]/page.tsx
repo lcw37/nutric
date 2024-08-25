@@ -117,7 +117,7 @@ export default function Log({ params }: { params: { entryDate: string } }) {
                         <>
                             {entries.map((entry: EntryModel, index: number) => (
                                 <EntryCard 
-                                    key={index.toString() + date} 
+                                    key={entry.id} 
                                     entry={entry}
                                     handleDeleteEntry={handleDeleteEntry}
                                 />
