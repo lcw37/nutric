@@ -36,12 +36,12 @@ type EstimateResponse = {
 };
 
 interface EntryModel {
-    id?: string
-    author_id: string
-    data: any
+    id?: string,
+    author_id: string,
+    data: any,
     estimate: MealModel,
     servings: string,
-    entry_date: string
+    entry_date?: string
 }
 
 interface Targets {

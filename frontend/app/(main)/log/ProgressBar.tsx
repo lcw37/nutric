@@ -46,7 +46,7 @@ export function ProgressBar({
             </div>
 
             {/* progress bar */}
-            <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700 relative">
+            <div className="w-full bg-white rounded-full h-2 dark:bg-gray-700 relative">
                 <div 
                     className={clsx('h-2 rounded-full', {
                         'bg-emerald-300': !(progressMin < 100 && 100 < progressMax) && !(progressMin > 100),

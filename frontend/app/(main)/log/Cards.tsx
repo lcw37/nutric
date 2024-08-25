@@ -65,7 +65,7 @@ export function TotalCard({
         sumEntries(entries)
     }, [entries])
     return (
-        <Card className="bg-emerald-50 border-none">
+        <Card className="bg-slate-200 border-none">
             <CardHeader>
                 <CardTitle>totals</CardTitle>
             </CardHeader>
@@ -183,8 +183,8 @@ export function EntryCard({
                                 x
                             </Button>
                             <Button 
-                                variant="secondary" 
-                                className="w-3/4"
+                                variant="destructive"
+                                className="w-3/4 bg-red-400"
                                 onClick={async () => {
                                     await deleteEntry(
                                         id, {
