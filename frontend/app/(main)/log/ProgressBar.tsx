@@ -50,7 +50,7 @@ export function ProgressBar({
                 <div 
                     className={clsx('h-2 rounded-full', {
                         'bg-emerald-300': !(progressMin < 100 && 100 < progressMax) && !(progressMin > 100),
-                        'bg-yellow-300': progressMin < 100 && 100 < progressMax,
+                        'bg-yellow-300': progressMin <= 100 && 100 <= progressMax,
                         'bg-red-300': progressMin > 100,
                     })}
                     style={{width: `${progressAvg}%`, maxWidth: '100%'}} 

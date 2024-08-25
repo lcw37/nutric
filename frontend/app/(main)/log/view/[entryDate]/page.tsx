@@ -63,6 +63,13 @@ export default function Log({ params }: { params: { entryDate: string } }) {
         setEntries(updatedEntries)
     }
 
+    async function handleUpdateEntry(modifiedEntry: EntryModel) {
+        const updatedEntries = [...entries]
+        const index = updatedEntries.findIndex(entry => entry.id === modifiedEntry.id)
+        updatedEntries[index] = modifiedEntry
+        setEntries(updatedEntries)
+    }
+
     return (
         <div className="w-full max-w-md mx-auto space-y-8 py-0">
             {/* date selector */}
@@ -121,6 +128,7 @@ export default function Log({ params }: { params: { entryDate: string } }) {
                                     key={entry.id} 
                                     entry={entry}
                                     handleDeleteEntry={handleDeleteEntry}
+                                    handleUpdateEntry={handleUpdateEntry}
                                 />
                             ))}
                         </>

@@ -64,10 +64,10 @@ async def show_entry(id: str):
 
 
 # Update entry by id
-@router.put('/{id}', response_model=UpdateEntryModel, response_model_by_alias=False)
-async def update_entry(id: str, entry: EntryModel):
+@router.put('/{id}', response_model=EntryModel, response_model_by_alias=False)
+async def update_entry(id: str, changedEntry: UpdateEntryModel = Body(...)):
     changes = {
-        k: v for k, v in entry.model_dump(by_alias=True).items() if v is not None
+        k: v for k, v in changedEntry.model_dump(by_alias=True).items() if v is not None
     }
     if len(changes) >= 1:
         update_result = await entries_collection.find_one_and_update(

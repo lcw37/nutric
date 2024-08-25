@@ -22,10 +22,12 @@ import { EntryModel } from '@/lib/types';
 
 export function EntryCard({
     entry,
-    handleDeleteEntry
+    handleDeleteEntry,
+    handleUpdateEntry
 }: {
     entry: EntryModel,
-    handleDeleteEntry: (deletedEntry: EntryModel) => void
+    handleDeleteEntry: (deletedEntry: EntryModel) => void,
+    handleUpdateEntry: (modifiedEntry: EntryModel) => void
 }) {
     const { 
         id, 
@@ -54,7 +56,9 @@ export function EntryCard({
                 <CardTitle>{title.toLowerCase()}</CardTitle>
                 <CardDescription></CardDescription>
             </CardHeader>
+
             <CardContent className="grid gap-4">
+                {/* servings, editable */}
                 <div className="flex items-center justify-between">
                     <span>servings</span>
                     {!isEditing ? (
@@ -63,6 +67,7 @@ export function EntryCard({
                         <Input value={servings} onChange={handleServingsChange} className="text-right text-sm w-10 h-6 p-1"/>
                     )}
                 </div>
+                {/* nutrition breakdown */}
                 {Object.keys(nutritionBreakdown).map((k) => (
                     <div className="flex items-center justify-between" key={k}>
                         <span>{k}</span>
@@ -78,63 +83,80 @@ export function EntryCard({
                         )}
                     </div>
                 ))}
+
                 <div className="flex gap-4">
-                    {!isEditing ? (
-                        // <Link href={`/log/edit/${entry.id}`} className="flex-1>
+                    {/* Edit/Save button */}
+                    <div className="w-1/2">
+                        {!isEditing ? (
+                            // <Link href={`/log/edit/${entry.id}`} className="flex-1> 
+                                <Button 
+                                    variant="secondary" 
+                                    // className="w-full"
+                                    className="w-full"
+                                    onClick={() => setIsEditing(true)}
+                                    disabled={isDeleteConfirmOpen}
+                                >
+                                    Edit
+                                </Button>
+                            // </Link> 
+                        ) : (
                             <Button 
                                 variant="secondary" 
                                 // className="w-full"
-                                className="flex-1"
-                                onClick={() => setIsEditing(true)}
-                            >
-                                Edit
-                            </Button>
-                        // </Link>
-                    ) : (
-                        <Button 
-                            variant="secondary" 
-                            // className="w-full"
-                            className="flex-1"
-                            onClick={() => setIsEditing(false)}
-                        >
-                            Save
-                        </Button>
-                    )}
-                    
-                    {!isDeleteConfirmOpen ? (
-                        <Button 
-                            variant="secondary" 
-                            className="flex-1 p-0"
-                            onClick={() => setIsDeleteConfirmOpen(true)}
-                        >
-                            Delete
-                        </Button>
-                    ) : (
-                        <div className="flex-1 p-0">
-                            <Button 
-                                variant="secondary" 
-                                className="w-1/4 border-r-4 border-r-white"
-                                onClick={() => setIsDeleteConfirmOpen(false)}
-                            >
-                                x
-                            </Button>
-                            <Button 
-                                variant="destructive"
-                                className="w-3/4 bg-red-400"
+                                className="w-full bg-emerald-100 hover:bg-emerald-200"
                                 onClick={async () => {
-                                    await deleteEntry(
+                                    const modifiedEntry = await updateEntry(
                                         id, {
-                                            author_id: author_id,
-                                            entry_date: entry_date
+                                            servings: servings
                                         }
                                     )
-                                    handleDeleteEntry(entry)
+                                    handleUpdateEntry(modifiedEntry)
+                                    setIsEditing(false)
                                 }}
                             >
-                                Confirm
+                                Save
                             </Button>
-                        </div>
-                    )}
+                        )}
+                    </div>
+                    
+                    {/* Delete/Confirm button */}
+                    <div className="w-1/2">
+                        {!isDeleteConfirmOpen ? (
+                            <Button 
+                                variant="secondary"
+                                className="w-full"
+                                onClick={() => setIsDeleteConfirmOpen(true)}
+                                disabled={isEditing}
+                            >
+                                Delete
+                            </Button>
+                        ) : (
+                            <>
+                                <Button 
+                                    variant="secondary" 
+                                    className="w-1/4 border-r-4 border-r-white"
+                                    onClick={() => setIsDeleteConfirmOpen(false)}
+                                >
+                                    x
+                                </Button>
+                                <Button 
+                                    variant="secondary"
+                                    className="w-3/4 bg-red-200 hover:bg-red-300"
+                                    onClick={async () => {
+                                        await deleteEntry(
+                                            id, {
+                                                author_id: author_id,
+                                                entry_date: entry_date
+                                            }
+                                        )
+                                        handleDeleteEntry(entry)
+                                    }}
+                                >
+                                    Confirm
+                                </Button>
+                            </>
+                        )}
+                    </div>
                 </div>
             </CardContent>
         </Card>

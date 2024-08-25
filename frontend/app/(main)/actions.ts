@@ -106,7 +106,7 @@ export async function readAllEntries(
 
 export async function updateEntry(
     entryId: string,
-    payload: any
+    payload: any // UpdateEntryModel
 ): Promise<EntryModel> {
     const userId = payload.author_id
     const res = await fetch(`${apiBaseUrl}/entries/${entryId}`, {
@@ -134,10 +134,7 @@ export async function deleteEntry(
             'X-UserId': userId,
             'X-HashedUserId': hashUserId(userId)
         },
-        cache: 'no-store'
     })
-    // revalidatePath(`/log/view/${entry_date}`)
-    // redirect(`/log/view/${entry_date}`)
     return await res.json()
 }
 
