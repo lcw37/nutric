@@ -35,7 +35,7 @@ export default function Log({ params }: { params: { entryDate: string } }) {
     const initEntries: EntryModel[] = []
     const [entries, setEntries] = useState(initEntries)
     
-    const initTargets: Targets = {calories: 100, carbs: 50, fat: 25, protein: 75}
+    const initTargets: Targets = {calories: 2000, carbs: 200, fat: 65, protein: 150}
     const [targets, setTargets] = useState(initTargets)
 
     useEffect(() => {
@@ -43,13 +43,12 @@ export default function Log({ params }: { params: { entryDate: string } }) {
         const fetchData = async () => {
             // get entries + targets for current user and current page's entry date
             const fetchedEntries: EntryModel[] = (await readAllEntries(user.id, {entry_date: entryDate})).entries
-            let fetchedTargets: Targets = initTargets
-            try {
-                // tries to fetch the most recently created targets
-                fetchedTargets = (await readTargets(user.id, {entry_date: entryDate})).targets
-            } catch (error) {
-                // if the current page's entry date is before any existing targets, fetch the most recent (TODO: check that this throws an error if targets doesn't exist)
+            let fetchedTargets: Targets = (await readTargets(user.id, {entry_date: entryDate})).targets
+            if (!fetchedTargets) {
                 fetchedTargets = (await readTargets(user.id, {})).targets
+            }
+            if (!fetchedTargets) {
+                fetchedTargets = initTargets
             }
             setEntries(fetchedEntries)
             setTargets(fetchedTargets)
