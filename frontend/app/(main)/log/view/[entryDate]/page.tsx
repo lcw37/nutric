@@ -12,7 +12,8 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
-import { EntryCard, TotalCard, SkeletonTotalCard } from '../../Cards';
+import { TotalCard, SkeletonTotalCard } from '../../TotalCard';
+import { EntryCard } from '../../EntryCard';
 
 import { cn } from "@/lib/utils"
 import { format, parse } from "date-fns"
