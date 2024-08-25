@@ -70,39 +70,41 @@ export default function Log({ params }: { params: { entryDate: string } }) {
     }
 
     return (
-        <div className="w-full max-w-md mx-auto space-y-8 py-0">
+        <div className="w-full max-w-md mx-auto space-y-8 py-0 px-4">
             {/* date selector */}
-            <Popover>
-                <PopoverTrigger asChild>
-                    <Button
-                        variant={"outline"}
-                        className={cn(
-                            "w-[280px] justify-start text-left font-normal",
-                            !date && "text-muted-foreground"
-                        )}
-                    >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {date ? format(date, "PPP") : <span>Pick a date</span>}
-                    </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                    <Calendar
-                        mode="single"
-                        selected={date}
-                        onSelect={(value) => {
-                            if (value) {
-                                try {
-                                    const newDate = format(value, 'MM-dd-yyyy')
-                                    router.push(`/log/view/${newDate}`)
-                                } catch (err) {
-                                    router.push('/')
-                                }
-                            } 
-                        }}
-                        initialFocus
-                    />
-                </PopoverContent>
-            </Popover>
+            <div className="flex justify-center">
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <Button
+                            variant={"outline"}
+                            className={cn(
+                                "w-[200px] md:w-[250px] justify-start text-left font-normal",
+                                !date && "text-muted-foreground"
+                            )}
+                        >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {date ? format(date, "PPP") : <span>Pick a date</span>}
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                        <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={(value) => {
+                                if (value) {
+                                    try {
+                                        const newDate = format(value, 'MM-dd-yyyy')
+                                        router.push(`/log/view/${newDate}`)
+                                    } catch (err) {
+                                        router.push('/')
+                                    }
+                                } 
+                            }}
+                            initialFocus
+                        />
+                    </PopoverContent>
+                </Popover>
+            </div>
 
             {loading ? (
                 <SkeletonTotalCard />

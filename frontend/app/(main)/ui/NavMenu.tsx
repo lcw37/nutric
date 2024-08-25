@@ -89,7 +89,7 @@ export default function NavMenu() {
                                         </Link>
                                     </SheetTrigger>
                                 )}
-                                <Separator />
+                                <Separator className="w-20"/>
                                 <SheetTrigger asChild>
                                     <Link href="/handler/account-settings" className="hover:text-green-700">
                                         profile
