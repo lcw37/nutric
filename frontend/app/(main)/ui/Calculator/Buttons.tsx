@@ -1,12 +1,14 @@
 'use client'
 
 
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import clsx from "clsx";
 import { useUser } from "@stackframe/stack";
 import Link from "next/link";
 import { useFormStatus } from "react-dom";
-import { createEntry } from "../../actions";
 
+import { Button } from "@/components/ui/button";
+import { createEntry } from "../../actions";
 import { EstimateResponse } from "@/lib/types";
 
 
@@ -20,10 +22,17 @@ export function AddToLogButton({
     const { data, estimate } = estimateResponse
     if (!data || !estimate) { return <></> }
 
+    const [isAdded, setIsAdded] = useState(false)
+
+    useEffect(() => {
+        setIsAdded(false)
+    }, [estimateResponse])
+
     const user = useUser()
     if (user) {
         return (
             <Button
+                variant="secondary"
                 onClick={async () => {
                     await createEntry({
                         author_id: user.id,
@@ -31,9 +40,14 @@ export function AddToLogButton({
                         estimate: estimate,
                         servings: servings
                     })
+                    setIsAdded(true)
                 }}
+                disabled={isAdded}
+                className={clsx({
+                    'bg-emerald-100 hover:bg-emerald-200': isAdded
+                })}
             >
-                    add to my log
+                    {isAdded ? 'done!' : 'add to my log'}
             </Button>
         )
     }
@@ -44,16 +58,16 @@ export function AddToLogButton({
     )
 }
 
-
 export function SubmitButton() {
-    const formStatus = useFormStatus()
-        return (
-            <Button 
-                type="submit" 
-                className="w-full" 
-                disabled={formStatus.pending}
-            >
-                submit
-            </Button>
+    const { pending } = useFormStatus()
+    return (
+        <Button
+            variant="secondary"
+            type="submit" 
+            className="w-full" 
+            disabled={pending}
+        >
+            submit
+        </Button>
     )
 }

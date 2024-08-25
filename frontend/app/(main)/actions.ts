@@ -70,7 +70,7 @@ export async function createEntry(payload: EntryModel): Promise<EntryModel> {
         },
         body: JSON.stringify(payload)
     })
-    revalidatePath('/log')
+    // revalidatePath('/log')
     return await res.json()
 }
 

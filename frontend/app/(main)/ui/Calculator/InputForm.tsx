@@ -25,6 +25,7 @@ export default function InputForm() {
     }
     const [state, formAction] = useFormState(handleFormSubmit, initialState)
 
+    // functions to manage uncontrolled inputs
     const descriptionTextAreaRef = useRef<HTMLTextAreaElement>(null)
     const followupTextAreaRef = useRef<HTMLTextAreaElement>(null)
     function setDescription(text: string) {
@@ -92,7 +93,7 @@ export default function InputForm() {
     return (
         <div className="w-full max-w-md mx-auto space-y-8 py-0">
             <div className="text-left grid gap-4">
-                <h1 className="text-3xl font-bold">nutrition calculator</h1>
+                {/* <h1 className="text-3xl font-bold">nutrition calculator</h1> */}
                 <p className="text-muted-foreground">
                     input a <span className="text-emerald-600 font-semibold">meal description</span> or a <span className="text-emerald-600 font-semibold">recipe url</span> to get a nutrition breakdown.
                 </p>
